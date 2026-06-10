@@ -13,6 +13,7 @@ bool electricActive;
 std::vector<Electric::Charge> charges;
 constexpr float defaultDt = 0.016;
 constexpr float gravity = 5;
+bool gravityActive = false;
 } // namespace
 
 std::span<const Particle> Particles::get() noexcept {
@@ -33,16 +34,41 @@ void Particles::reset() noexcept {
     }
 }
 
-void Particles::tickGravity() noexcept {
+namespace {
+void tickGravity(float dt) {
+    for (auto& particle : particles) {
+        particle.setVelocity(particle.getVelocity() + Velocity{0, gravity * dt});
+    }
+}
+void tickElectric(float dt) {
+    for (auto& particle : particles) {
+        // particle.setVelocity(particle.getVelocity()); // TODO: IMPLEMENT ELECTROSTATIC FORCES
+    }
+}
+} // namespace
+
+void Particles::tick(float dt) noexcept {
+    if (Gravity::on()) {
+        tickGravity(dt);
+    }
+    if (Electric::on()) {
+        tickElectric(dt);
+    }
     for (auto& part : particles) {
-        part.setVelocity(part.getVelocity() + Velocity{0, gravity});
+        part.tick(dt);
     }
 }
 
-void Particles::tickPositions() noexcept {
-    for (auto& part : particles) {
-        part.tick(defaultDt);
-    }
+void Gravity::init() noexcept {
+    gravityActive = true;
+}
+
+bool Gravity::on() noexcept {
+    return gravityActive;
+}
+
+void Gravity::finish() noexcept {
+    gravityActive = false;
 }
 
 void Electric::init() noexcept {

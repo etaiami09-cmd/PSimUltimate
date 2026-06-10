@@ -11,12 +11,12 @@ int main() {
     Electric::init();
     Electric::set(0, 1);
     Electric::set(1, 0);
+    Gravity::init();
 
     startWindow();
 
     while (!WindowShouldClose()) {
-        // Particles::tickGravity();
-        // Particles::tickPositions();
+        Particles::tick(0.016f);
         drawFrame();
     }
 

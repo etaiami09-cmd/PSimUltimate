@@ -10,9 +10,14 @@ namespace Particles {
     std::span<const Particle> get() noexcept;
     void add(Position pos, Velocity vel);
     void reset() noexcept;
-    void tickGravity() noexcept;
-    void tickPositions() noexcept;
+    void tick(float dt) noexcept;
 } // namespace Particles
+
+namespace Gravity {
+    void init() noexcept;
+    bool on() noexcept;
+    void finish() noexcept;
+} // namespace Gravity
 
 namespace Electric {
     using Charge = float;

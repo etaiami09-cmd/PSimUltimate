@@ -16,6 +16,9 @@ constexpr int windowWidth = 1270;
 constexpr int windowHeight = 720;
 constexpr int targetFPS = 60;
 constexpr float defaultRadius = 15;
+constexpr int fontSize = 25;
+constexpr float textButtonPadding = 5.0;
+constexpr ImVec2 buttonAlignImVec(0.5, 0.5);
 } // namespace
 
 void startWindow() {
@@ -24,8 +27,6 @@ void startWindow() {
     SetTargetFPS(targetFPS);
     rlImGuiSetup(true);
     ImGui::PushFont(ImGui::GetIO().Fonts->AddFontDefault());
-
-    
 }
 
 void closeWindow() {
@@ -44,16 +45,37 @@ void toggleElectric() {
         Electric::init();
     }
 }
+void toggleGravity() {
+    if (Gravity::on()) {
+        Gravity::finish();
+    }
+    else {
+        Gravity::init();
+    }
+}
 void drawElectricGUI() {
     std::string buttonText = Electric::on() ? "Disable" : "Enable";
-    ImGui::UpdateCurrentFontSize(25);
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+    ImGui::UpdateCurrentFontSize(fontSize);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textButtonPadding);
     ImGui::Text("%s", std::format("Electric {}", Electric::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 5.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.5, 0.5));
-    if (ImGui::Button(buttonText.c_str(), ImVec2(140, 40))) {
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
+    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
+    if (ImGui::Button(std::format("{}##electric_button", buttonText).c_str(), ImVec2(140, 40))) {
         toggleElectric();
+    }
+    ImGui::PopStyleVar();
+}
+void drawGravityGUI() {
+    std::string buttonText = Gravity::on() ? "Disable" : "Enable";
+    ImGui::UpdateCurrentFontSize(fontSize);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textButtonPadding);
+    ImGui::Text("%s", std::format("Gravity {}", Gravity::on() ? "On" : "Off").c_str());
+    ImGui::SameLine();
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
+    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
+    if (ImGui::Button(std::format("{}##gravity_button", buttonText).c_str(), ImVec2(140, 40))) {
+        toggleGravity();
     }
     ImGui::PopStyleVar();
 }
@@ -66,6 +88,7 @@ void drawGUI() {
         | ImGuiWindowFlags_NoResize
         | ImGuiWindowFlags_NoCollapse);
     drawElectricGUI();
+    drawGravityGUI();
     ImGui::End();
     
     rlImGuiEnd();
