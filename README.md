@@ -19,7 +19,7 @@ This project is written over summer as part of the Stardance program.
 
 ```sh
 # 1. Clone the repository
-git clone <repo-url>
+git clone https://github.com/etaiami09-cmd/PSimUltimate.git
 cd ParticleSimulatorUltimate
 
 # 2. Configure (creates a build/ directory)
