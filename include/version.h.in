@@ -1,0 +1,8 @@
+#ifndef PSIM_VERSION_H_IN
+#define PSIM_VERSION_H_IN
+
+namespace PSimImpl {
+    constexpr auto PSimAppVersion_ = "@PROJECT_VERSION@";
+}
+
+#endif

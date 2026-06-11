@@ -1,4 +1,3 @@
-#include <cmath>
 #include <string>
 #include <cstddef>
 #include <format>
@@ -11,19 +10,23 @@
 #include "imgui.h"
 #include "particles.hpp"
 #include "Particle.hpp"
+#include "open_shell_url.hpp"
+#include "version.h"
 
 namespace {
 constexpr const char* windowTitle = "Particle Simulator Ultimate";
 constexpr int windowWidth = 1270;
 constexpr int windowHeight = 720;
 constexpr int targetFPS = 60;
-constexpr float defaultRadius = 15;
 constexpr int fontSize = 25;
 constexpr float textButtonPadding = 5.0;
 constexpr ImVec2 buttonAlignImVec(0.5, 0.5);
 constexpr ImVec2 particleCreationSize(300, 200);
 constexpr ImVec2 particleCreationSpecificationSize(300, 100);
 constexpr ImVec2 particleCreationButtonSize(80, 40);
+constexpr ImVec2 modeToggleButtonSize(140, 40);
+constexpr ImVec4 appVersionColorRGBA(0.6f, 0.6f, 0.6f, 1.0f);
+constexpr const char* repoURL = "https://github.com/etaiami09-cmd/PSimUltimate";
 } // namespace
 
 void startWindow() {
@@ -66,7 +69,7 @@ void drawElectricGUI() {
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
-    if (ImGui::Button(std::format("{}##electric_button", buttonText).c_str(), ImVec2(140, 40))) {
+    if (ImGui::Button(std::format("{}##electric_button", buttonText).c_str(), modeToggleButtonSize)) {
         toggleElectric();
     }
     ImGui::PopStyleVar();
@@ -79,7 +82,7 @@ void drawGravityGUI() {
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
-    if (ImGui::Button(std::format("{}##gravity_button", buttonText).c_str(), ImVec2(140, 40))) {
+    if (ImGui::Button(std::format("{}##gravity_button", buttonText).c_str(), modeToggleButtonSize)) {
         toggleGravity();
     }
     ImGui::PopStyleVar();
@@ -107,6 +110,23 @@ void drawParticleCreationGUI() {
     }
     ImGui::EndChild();
 }
+void drawAboutWindow() {
+    ImGui::Text("PSim Ultimate");
+    ImGui::TextColored(appVersionColorRGBA,
+        "%s", std::format("Version {}", PSimImpl::PSimAppVersion_).c_str());
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    ImGui::Text("© 2026 etaiami09-cmd. MIT License.");
+    ImGui::Spacing();
+
+    ImGui::Text("Project Homepage:");
+    ImGui::SameLine();
+    
+    if (ImGui::TextLink("Visit GitHub")) {
+        openShellURL(repoURL);
+    }
+}
 void drawGUI() {
     rlImGuiBegin();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -118,6 +138,7 @@ void drawGUI() {
     drawElectricGUI();
     drawGravityGUI();
     drawParticleCreationGUI();
+    drawAboutWindow();
     ImGui::End();
     
     rlImGuiEnd();
