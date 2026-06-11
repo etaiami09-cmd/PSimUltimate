@@ -3,6 +3,7 @@
 
 #include "numeric_type.hpp"
 #include <concepts>
+#include <type_traits>
 
 template<NumericType T>
 struct Vec2 {
@@ -18,6 +19,12 @@ struct Vec2 {
     
     [[nodiscard]] constexpr Vec2<T> operator/(NumericType auto dividor) const noexcept;
     
+    [[nodiscard]] constexpr Vec2<T> operator-() const noexcept;
+
+    template<typename Child>
+    requires std::derived_from<Child, Vec2<T>>
+    constexpr explicit operator Child() const;
+    
     constexpr void operator+=(Vec2<T> other) noexcept;
     constexpr void operator-=(Vec2<T> other) noexcept;
     constexpr void operator*=(NumericType auto factor) noexcept;
@@ -31,6 +38,8 @@ struct Vec2 {
 namespace PSimImpl {
 template<NumericType E, typename T>
 struct VectorOperators {
+    explicit VectorOperators() noexcept = default;
+
     [[nodiscard]] constexpr T operator+(T other) const noexcept {
         auto result = static_cast<const Vec2<E>&>(static_cast<const T&>(*this))
             + static_cast<Vec2<E>&>(other);
@@ -40,6 +49,9 @@ struct VectorOperators {
         auto result = static_cast<const Vec2<E>&>(static_cast<const T&>(*this))
             - static_cast<Vec2<E>&>(other);
         return T(result.x, result.y);
+    }
+    [[nodiscard]] constexpr T operator-() const noexcept {
+        return T{-static_cast<const Vec2<E>&>(static_cast<const T&>(*this))};
     }
 };
 } // namespace PSimImpl

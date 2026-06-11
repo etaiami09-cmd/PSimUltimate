@@ -31,6 +31,8 @@ namespace Electric {
     void set(size_t index, Charge charge) noexcept;
     void finish() noexcept;
     void toggle() noexcept;
+    void setK(float newK) noexcept;
+    [[nodiscard]] float getK() noexcept;
     std::optional<Charge> get(size_t index) noexcept;
     [[nodiscard]] bool on() noexcept;
 } // namespace Electric

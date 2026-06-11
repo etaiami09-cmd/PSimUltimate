@@ -30,6 +30,17 @@ template<NumericType T>
 [[nodiscard]] constexpr Vec2<T> Vec2<T>::operator/(NumericType auto dividor) const noexcept {
     return Vec2<T>{x / dividor, y / dividor};
 }
+template<NumericType T>
+[[nodiscard]] constexpr Vec2<T> Vec2<T>::operator-() const noexcept {
+    return Vec2<T>{-x, -y};
+}
+
+template<NumericType T>
+template<typename Child>
+requires std::derived_from<Child, Vec2<T>>
+constexpr Vec2<T>::operator Child() const {
+    return Child{x, y};
+}
 
 template<NumericType T>
 constexpr void Vec2<T>::operator+=(Vec2<T> other) noexcept {

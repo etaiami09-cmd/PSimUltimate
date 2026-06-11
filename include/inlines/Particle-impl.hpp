@@ -9,15 +9,15 @@ constexpr Particle::Particle(const Position position, const Velocity velocity, f
 constexpr Particle::Particle(const Particle& other) noexcept
 : position(other.position), velocity(other.velocity), radius(other.radius) {}
 
-inline const Position& Particle::getPosition() const noexcept {
+[[nodiscard]] inline const Position& Particle::getPosition() const noexcept {
     return position;
 }
 
-inline const Velocity& Particle::getVelocity() const noexcept {
+[[nodiscard]] inline const Velocity& Particle::getVelocity() const noexcept {
     return velocity;
 }
 
-inline float Particle::getRadius() const noexcept {
+[[nodiscard]] inline float Particle::getRadius() const noexcept {
     return radius;
 }
 
