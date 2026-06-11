@@ -1,15 +1,16 @@
 #include "raylib.h"
 #include "graphical.hpp"
-#include "Particle.hpp"
+#include "simulation.hpp"
 #include "particles.hpp"
-#include <iostream>
 
 int main() {
 
     startWindow();
 
     while (!WindowShouldClose()) {
-        Particles::tick(0.016f);
+        if (Simulation::on()) {
+            Particles::tick();
+        }
         drawFrame();
     }
 

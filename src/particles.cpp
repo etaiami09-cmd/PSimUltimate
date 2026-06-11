@@ -11,8 +11,8 @@ namespace {
 std::vector<Particle> particles;
 bool electricActive;
 std::vector<Electric::Charge> charges;
-constexpr float defaultDt = 0.016;
-constexpr float gravity = 5;
+constexpr float defaultGravity = 5;
+float gravity = defaultGravity;
 bool gravityActive = false;
 } // namespace
 
@@ -37,7 +37,7 @@ void Particles::reset() noexcept {
 namespace {
 void tickGravity(float dt) {
     for (auto& particle : particles) {
-        particle.setVelocity(particle.getVelocity() + Velocity{0, gravity * dt});
+        particle.setVelocity(particle.getVelocity() + Velocity{0, Gravity::get() * dt});
     }
 }
 void tickElectric(float dt) {
@@ -63,8 +63,16 @@ void Gravity::init() noexcept {
     gravityActive = true;
 }
 
-bool Gravity::on() noexcept {
+[[nodiscard]] bool Gravity::on() noexcept {
     return gravityActive;
+}
+
+void Gravity::set(float newGravity) noexcept {
+    gravity = newGravity;
+}
+
+[[nodiscard]] float Gravity::get() noexcept {
+    return gravity;
 }
 
 void Gravity::finish() noexcept {
@@ -96,6 +104,6 @@ std::optional<Electric::Charge> Electric::get(size_t index) noexcept {
     return charges[index];
 }
 
-bool Electric::on() noexcept {
+[[nodiscard]] bool Electric::on() noexcept {
     return electricActive;
 }

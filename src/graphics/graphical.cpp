@@ -1,9 +1,10 @@
+#include <cmath>
 #include <string>
 #include <cstddef>
 #include <format>
 
 #include "graphical.hpp"
-
+#include "simulation.hpp"
 #include "imgui_internal.h"
 #include "raylib.h"
 #include "rlImGui.h"
@@ -11,6 +12,7 @@
 #include "particles.hpp"
 #include "Particle.hpp"
 #include "open_shell_url.hpp"
+#include "style_var_holder.hpp"
 #include "version.hpp"
 
 namespace {
@@ -21,13 +23,13 @@ constexpr int targetFPS = 60;
 constexpr int GUIWidth = 300;
 constexpr int GUIHeight = 720;
 constexpr float textButtonPadding = 5.0;
-constexpr int modeButtonFontSize = 20;
+constexpr int modeButtonFontSize = 19;
 constexpr int modeToggleHeaderPadding = 10;
 constexpr ImVec2 imGuiDefaultCellPadding(5, 5);
 constexpr ImVec2 buttonAlignImVec(0.5, 0.5);
 constexpr ImVec2 particleCreationSize(GUIWidth - imGuiDefaultCellPadding.x * 3, 260);
 constexpr ImVec2 particleCreationButtonSize(80, 40);
-constexpr ImVec2 modeToggleSize(GUIWidth - imGuiDefaultCellPadding.x * 3, 115);
+constexpr ImVec2 modeToggleSize(GUIWidth - imGuiDefaultCellPadding.x * 3, 150);
 constexpr ImVec2 modeToggleButtonSize(90, 30);
 constexpr ImVec4 appVersionColorRGBA(0.6f, 0.6f, 0.6f, 1.0f);
 constexpr const char* repoURL = "https://github.com/etaiami09-cmd/PSimUltimate";
@@ -63,6 +65,31 @@ void toggleGravity() {
         Gravity::init();
     }
 }
+void toggleSimulation() {
+    if (Simulation::on()) {
+        Simulation::pause();
+    }
+    else {
+        Simulation::start();
+    }
+}
+void drawSimulationPauseGUI() {
+    std::string buttonText = Simulation::on() ? "Disable" : "Enabled";
+    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textButtonPadding);
+    ImGui::Text("%s", std::format("Simulation: {}", Simulation::on() ? "On" : "Off").c_str());
+    ImGui::SameLine();
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
+    StyleVarHolder holder(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
+    ImGui::SetCursorPosX(
+        ImGui::GetCursorPosX()
+        + ImGui::GetContentRegionAvail().x
+        - modeToggleButtonSize.x
+    );
+    if (ImGui::Button(std::format("{}##simulation_button", buttonText).c_str(), modeToggleButtonSize)) {
+        toggleSimulation();
+    }
+}
 void drawElectricToggleGUI() {
     std::string buttonText = Electric::on() ? "Disable" : "Enable";
     ImGui::UpdateCurrentFontSize(modeButtonFontSize);
@@ -70,7 +97,7 @@ void drawElectricToggleGUI() {
     ImGui::Text("%s", std::format("Electric: {}", Electric::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
-    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
+    StyleVarHolder holder(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
     ImGui::SetCursorPosX(
         ImGui::GetCursorPosX()
         + ImGui::GetContentRegionAvail().x
@@ -79,7 +106,6 @@ void drawElectricToggleGUI() {
     if (ImGui::Button(std::format("{}##electric_button", buttonText).c_str(), modeToggleButtonSize)) {
         toggleElectric();
     }
-    ImGui::PopStyleVar();
 }
 void drawGravityToggleGUI() {
     std::string buttonText = Gravity::on() ? "Disable" : "Enable";
@@ -88,7 +114,7 @@ void drawGravityToggleGUI() {
     ImGui::Text("%s", std::format("Gravity: {}", Gravity::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
-    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
+    StyleVarHolder holder(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
     ImGui::SetCursorPosX(
         ImGui::GetCursorPosX()
         + ImGui::GetContentRegionAvail().x
@@ -97,7 +123,6 @@ void drawGravityToggleGUI() {
     if (ImGui::Button(std::format("{}##gravity_button", buttonText).c_str(), modeToggleButtonSize)) {
         toggleGravity();
     }
-    ImGui::PopStyleVar();
 }
 void drawModeToggleGUI() {
     ImGui::BeginChild("ModeToggleGUI", modeToggleSize, ImGuiChildFlags_Borders);
@@ -105,6 +130,7 @@ void drawModeToggleGUI() {
     ImGui::Text("Toggle Modes");
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + modeToggleHeaderPadding);
     ImGui::BeginGroup();
+    drawSimulationPauseGUI();
     drawElectricToggleGUI();
     drawGravityToggleGUI();
     ImGui::EndGroup();
