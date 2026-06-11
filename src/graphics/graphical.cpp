@@ -149,7 +149,7 @@ void drawParticles() {
             DrawCircle(
                 static_cast<int>(particle.getPosition().x),
                 static_cast<int>(particle.getPosition().y),
-                defaultRadius, RED);
+                particle.getRadius(), RED);
         }
     }
 }
