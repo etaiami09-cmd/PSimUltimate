@@ -1,5 +1,5 @@
-#ifndef PSIM_VERSION_HPP_IN
-#define PSIM_VERSION_HPP_IN
+#ifndef PSIM_VERSION_HPP
+#define PSIM_VERSION_HPP
 
 namespace PSimImpl {
     constexpr auto PSimAppVersion_ = "@PROJECT_VERSION@";

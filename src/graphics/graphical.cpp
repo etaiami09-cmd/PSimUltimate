@@ -18,13 +18,17 @@ constexpr const char* windowTitle = "Particle Simulator Ultimate";
 constexpr int windowWidth = 1270;
 constexpr int windowHeight = 720;
 constexpr int targetFPS = 60;
-constexpr int fontSize = 25;
+constexpr int GUIWidth = 300;
+constexpr int GUIHeight = 720;
 constexpr float textButtonPadding = 5.0;
+constexpr int modeButtonFontSize = 20;
+constexpr int modeToggleHeaderPadding = 10;
+constexpr ImVec2 imGuiDefaultCellPadding(5, 5);
 constexpr ImVec2 buttonAlignImVec(0.5, 0.5);
-constexpr ImVec2 particleCreationSize(300, 200);
-constexpr ImVec2 particleCreationSpecificationSize(300, 100);
+constexpr ImVec2 particleCreationSize(GUIWidth - imGuiDefaultCellPadding.x * 3, 260);
 constexpr ImVec2 particleCreationButtonSize(80, 40);
-constexpr ImVec2 modeToggleButtonSize(140, 40);
+constexpr ImVec2 modeToggleSize(GUIWidth - imGuiDefaultCellPadding.x * 3, 115);
+constexpr ImVec2 modeToggleButtonSize(90, 30);
 constexpr ImVec4 appVersionColorRGBA(0.6f, 0.6f, 0.6f, 1.0f);
 constexpr const char* repoURL = "https://github.com/etaiami09-cmd/PSimUltimate";
 } // namespace
@@ -43,8 +47,6 @@ void closeWindow() {
 }
 
 namespace {
-constexpr int GUIWidth = 300;
-constexpr int GUIHeight = 720;
 void toggleElectric() {
     if (Electric::on()) {
         Electric::finish();
@@ -61,53 +63,79 @@ void toggleGravity() {
         Gravity::init();
     }
 }
-void drawElectricGUI() {
+void drawElectricToggleGUI() {
     std::string buttonText = Electric::on() ? "Disable" : "Enable";
-    ImGui::UpdateCurrentFontSize(fontSize);
+    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textButtonPadding);
-    ImGui::Text("%s", std::format("Electric {}", Electric::on() ? "On" : "Off").c_str());
+    ImGui::Text("%s", std::format("Electric: {}", Electric::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
+    ImGui::SetCursorPosX(
+        ImGui::GetCursorPosX()
+        + ImGui::GetContentRegionAvail().x
+        - modeToggleButtonSize.x
+    );
     if (ImGui::Button(std::format("{}##electric_button", buttonText).c_str(), modeToggleButtonSize)) {
         toggleElectric();
     }
     ImGui::PopStyleVar();
 }
-void drawGravityGUI() {
+void drawGravityToggleGUI() {
     std::string buttonText = Gravity::on() ? "Disable" : "Enable";
-    ImGui::UpdateCurrentFontSize(fontSize);
+    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textButtonPadding);
-    ImGui::Text("%s", std::format("Gravity {}", Gravity::on() ? "On" : "Off").c_str());
+    ImGui::Text("%s", std::format("Gravity: {}", Gravity::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - textButtonPadding);
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, buttonAlignImVec);
+    ImGui::SetCursorPosX(
+        ImGui::GetCursorPosX()
+        + ImGui::GetContentRegionAvail().x
+        - modeToggleButtonSize.x
+    );
     if (ImGui::Button(std::format("{}##gravity_button", buttonText).c_str(), modeToggleButtonSize)) {
         toggleGravity();
     }
     ImGui::PopStyleVar();
 }
+void drawModeToggleGUI() {
+    ImGui::BeginChild("ModeToggleGUI", modeToggleSize, ImGuiChildFlags_Borders);
+    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
+    ImGui::Text("Toggle Modes");
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + modeToggleHeaderPadding);
+    ImGui::BeginGroup();
+    drawElectricToggleGUI();
+    drawGravityToggleGUI();
+    ImGui::EndGroup();
+    ImGui::EndChild();
+}
 int newParticleX = 0;
 int newParticleY = 0;
+int newParticleVelX = 0;
+int newParticleVelY = 0;
 float newParticleRadius = 0;
 void drawParticleCreationGUI() {
     ImGui::BeginChild("ParticleCreationGUI", particleCreationSize, ImGuiChildFlags_Borders);
     ImGui::Text("New Particle");
-    ImGui::BeginChild("ParticleCreationSpecificationGUI", particleCreationSpecificationSize);
+    ImGui::BeginGroup();
     ImGui::Text("Size");
     ImGui::InputFloat("Radius", &newParticleRadius);
     ImGui::Text("Position");
-    ImGui::InputInt("X", &newParticleX);
-    ImGui::InputInt("Y", &newParticleY);
+    ImGui::InputInt("X##new_particle_position_x", &newParticleX);
+    ImGui::InputInt("Y##Xnew_particle_position_y", &newParticleY);
+    ImGui::Text("Initial Velocity");
+    ImGui::InputInt("X##new_particle_velocity_x", &newParticleVelX);
+    ImGui::InputInt("Y##new_particle_velocity_y", &newParticleVelY);
     ImGui::Text("Create Particle");
-    ImGui::EndChild();
     if (ImGui::Button("Create", particleCreationButtonSize)) {
         Particles::add(
             Position{static_cast<float>(newParticleX), static_cast<float>(newParticleY)},
-            Velocity{0, 0},
+            Velocity{static_cast<float>(newParticleVelX), static_cast<float>(newParticleVelY)},
             newParticleRadius
         );
     }
+    ImGui::EndGroup();
     ImGui::EndChild();
 }
 void drawAboutWindow() {
@@ -134,9 +162,10 @@ void drawGUI() {
     ImGui::Begin("Controls", nullptr,
         ImGuiWindowFlags_NoMove
         | ImGuiWindowFlags_NoResize
-        | ImGuiWindowFlags_NoCollapse);
-    drawElectricGUI();
-    drawGravityGUI();
+        | ImGuiWindowFlags_NoCollapse
+    );
+    
+    drawModeToggleGUI();
     drawParticleCreationGUI();
     drawAboutWindow();
     ImGui::End();
