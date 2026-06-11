@@ -21,8 +21,8 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(raylib)
 
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/version.h.in
-    ${CMAKE_CURRENT_BINARY_DIR}/version.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/version.hpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/version.hpp
     @ONLY
 )
 

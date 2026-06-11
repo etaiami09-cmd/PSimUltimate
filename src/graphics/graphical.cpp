@@ -11,7 +11,7 @@
 #include "particles.hpp"
 #include "Particle.hpp"
 #include "open_shell_url.hpp"
-#include "version.h"
+#include "version.hpp"
 
 namespace {
 constexpr const char* windowTitle = "Particle Simulator Ultimate";
