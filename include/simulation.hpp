@@ -5,6 +5,7 @@ namespace Simulation {
 void start() noexcept;
 [[nodiscard]] bool on() noexcept;
 void pause() noexcept;
+void toggle() noexcept;
 } // namespace Simulation
 
 #endif

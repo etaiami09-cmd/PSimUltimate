@@ -15,3 +15,7 @@ void Simulation::start() noexcept {
 void Simulation::pause() noexcept {
     isActive = false;
 }
+
+void Simulation::toggle() noexcept {
+    isActive = !isActive;
+}

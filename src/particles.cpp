@@ -71,12 +71,20 @@ void Gravity::set(float newGravity) noexcept {
     gravity = newGravity;
 }
 
+[[nodiscard]] float Gravity::getDefault() noexcept {
+    return defaultGravity;
+}
+
 [[nodiscard]] float Gravity::get() noexcept {
     return gravity;
 }
 
 void Gravity::finish() noexcept {
     gravityActive = false;
+}
+
+void Gravity::toggle() noexcept {
+    gravityActive = !gravityActive;
 }
 
 void Electric::init() noexcept {
@@ -95,6 +103,10 @@ void Electric::set(size_t index, Charge charge) noexcept {
 void Electric::finish() noexcept {
     electricActive = false;
     charges.clear();
+}
+
+void Electric::toggle() noexcept {
+    electricActive = !electricActive;
 }
 
 std::optional<Electric::Charge> Electric::get(size_t index) noexcept {

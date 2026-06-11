@@ -1,7 +1,13 @@
 # Particle Simulator Ultimate - A General Purpose Particle Simulator
+![](https://github.com/user-attachments/assets/d9f4893b-f399-483a-8a96-977b5f171241)
 ## The Goal
 This project aims to create a multi-mode particle simulation to simulate electrostatics, gravity, and chemical bonds.
 The project should utilize ImGui to create a responsive UI and raylib to handle its own rendering needs.
+## Try It Out
+An alpha release with an installer can be found in [this link](https://github.com/etaiami09-cmd/PSimUltimate/releases/tag/v0.1.2). Simply follow the instructions in the install wizard and the app should pop up in your startup menu.
+## Features
+* Functional GUI to control the simulation
+* Working gravity
 ## License
 This project is published with the MIT license, which can be viewed in License.txt.
 ## Stardance
@@ -41,3 +47,6 @@ cmake --build build --config Release
 ```
 
 > **Note:** The first configure step will clone the raylib repository from GitHub, which may take a moment depending on your connection speed.
+
+## Credits
+This project heavily utilizes 3 incredible open source libraries: Raylib, Dear ImGui, and rlImGui to bind the previous two.

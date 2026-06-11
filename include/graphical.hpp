@@ -5,4 +5,6 @@ void startWindow();
 void closeWindow();
 void drawFrame();
 
+#include "inlines/graphical-impl.hpp"  // IWYU pragma: export
+
 #endif
