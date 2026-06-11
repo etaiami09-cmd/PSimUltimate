@@ -25,14 +25,17 @@ class Particle {
 private:
     Position position;
     Velocity velocity;
+    float radius;
 public:
     constexpr Particle() noexcept;
-    constexpr Particle(Position position, Velocity velocity) noexcept;
+    constexpr Particle(Position position, Velocity velocity, float radius) noexcept;
     constexpr Particle(const Particle& other) noexcept;
     const Position& getPosition() const noexcept;
     const Velocity& getVelocity() const noexcept;
+    float getRadius() const noexcept;
     void setPosition(Position newPosition) noexcept;
     void setVelocity(Velocity newVelocity) noexcept;
+    void setRadius(float newRadius) noexcept;
     void tick(float dt);
 };
 

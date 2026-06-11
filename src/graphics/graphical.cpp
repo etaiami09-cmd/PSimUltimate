@@ -1,3 +1,4 @@
+#include <cmath>
 #include <string>
 #include <cstddef>
 #include <format>
@@ -9,6 +10,7 @@
 #include "rlImGui.h"
 #include "imgui.h"
 #include "particles.hpp"
+#include "Particle.hpp"
 
 namespace {
 constexpr const char* windowTitle = "Particle Simulator Ultimate";
@@ -19,6 +21,9 @@ constexpr float defaultRadius = 15;
 constexpr int fontSize = 25;
 constexpr float textButtonPadding = 5.0;
 constexpr ImVec2 buttonAlignImVec(0.5, 0.5);
+constexpr ImVec2 particleCreationSize(300, 200);
+constexpr ImVec2 particleCreationSpecificationSize(300, 100);
+constexpr ImVec2 particleCreationButtonSize(80, 40);
 } // namespace
 
 void startWindow() {
@@ -35,8 +40,8 @@ void closeWindow() {
 }
 
 namespace {
-constexpr int GUIWidth = 1270;
-constexpr int GUIHeight = 120;
+constexpr int GUIWidth = 300;
+constexpr int GUIHeight = 720;
 void toggleElectric() {
     if (Electric::on()) {
         Electric::finish();
@@ -79,6 +84,29 @@ void drawGravityGUI() {
     }
     ImGui::PopStyleVar();
 }
+int newParticleX = 0;
+int newParticleY = 0;
+float newParticleRadius = 0;
+void drawParticleCreationGUI() {
+    ImGui::BeginChild("ParticleCreationGUI", particleCreationSize, ImGuiChildFlags_Borders);
+    ImGui::Text("New Particle");
+    ImGui::BeginChild("ParticleCreationSpecificationGUI", particleCreationSpecificationSize);
+    ImGui::Text("Size");
+    ImGui::InputFloat("Radius", &newParticleRadius);
+    ImGui::Text("Position");
+    ImGui::InputInt("X", &newParticleX);
+    ImGui::InputInt("Y", &newParticleY);
+    ImGui::Text("Create Particle");
+    ImGui::EndChild();
+    if (ImGui::Button("Create", particleCreationButtonSize)) {
+        Particles::add(
+            Position{static_cast<float>(newParticleX), static_cast<float>(newParticleY)},
+            Velocity{0, 0},
+            newParticleRadius
+        );
+    }
+    ImGui::EndChild();
+}
 void drawGUI() {
     rlImGuiBegin();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -89,6 +117,7 @@ void drawGUI() {
         | ImGuiWindowFlags_NoCollapse);
     drawElectricGUI();
     drawGravityGUI();
+    drawParticleCreationGUI();
     ImGui::End();
     
     rlImGuiEnd();
@@ -105,7 +134,7 @@ void drawElectricParticles() {
         DrawCircle(
             static_cast<int>(particles[i].getPosition().x),
             static_cast<int>(particles[i].getPosition().y),
-            defaultRadius, color
+            particles[i].getRadius(), color
         );
     }
 }

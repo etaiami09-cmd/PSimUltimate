@@ -20,8 +20,8 @@ std::span<const Particle> Particles::get() noexcept {
         return std::span{particles};
 }
 
-void Particles::add(Position pos, Velocity vel) {
-    particles.emplace_back(pos, vel);
+void Particles::add(Position pos, Velocity vel, float radius) {
+    particles.emplace_back(pos, vel, radius);
     if (electricActive) {
         charges.push_back(0);
     }

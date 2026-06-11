@@ -8,7 +8,7 @@
 
 namespace Particles {
     std::span<const Particle> get() noexcept;
-    void add(Position pos, Velocity vel);
+    void add(Position pos, Velocity vel, float radius);
     void reset() noexcept;
     void tick(float dt) noexcept;
 } // namespace Particles
