@@ -18,12 +18,12 @@ constexpr int windowWidth = 1270;
 constexpr int windowHeight = 720;
 constexpr int targetFPS = 60;
 constexpr int GUIWidth = 300;
-constexpr int GUIHeight = 720;
 } // namespace
 
 void startWindow() {
     SetTraceLogLevel(LOG_NONE);
     SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, windowTitle);
     SetTargetFPS(targetFPS);
     rlImGuiSetup(true);
@@ -40,7 +40,7 @@ namespace {
 void drawGUI() {
     rlImGuiBegin();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(GUIWidth, GUIHeight));
+    ImGui::SetNextWindowSize(ImVec2{GUIWidth, static_cast<float>(GetScreenHeight())});
     ImGui::Begin("Controls", nullptr,
         ImGuiWindowFlags_NoMove
         | ImGuiWindowFlags_NoResize
