@@ -39,10 +39,9 @@ void drawParticleCreationGUI() {
     ImGui::SeparatorText("New Particle");
     ImGui::Spacing();
     ImGui::BeginGroup();
-    ImGui::Text("Size");
-    ImGui::InputFloat("Radius", &newParticleRadius);
     vecInput("Position", &newParticleX, &newParticleY);
     vecInput("Velocity", &newParticleVelX, &newParticleVelY);
+    valueInput("Radius", &newParticleRadius);
     valueInput("Mass", &newParticleMass);
     valueInput("Charge", &newParticleCharge);
     ImGui::Text("Create Particle");

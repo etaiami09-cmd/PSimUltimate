@@ -11,13 +11,11 @@
 #include "simulation.hpp"
 
 namespace {
-constexpr ImVec2 modeToggleSize(PSimImpl::GUIWidth - PSimImpl::imGuiDefaultCellPadding.x * 3, 150);
 constexpr ImVec2 modeToggleButtonSize(90, 30);
 constexpr int modeButtonFontSize = 19;
 
 void drawSimulationPauseGUI() {
     std::string buttonText = Simulation::on() ? "Disable" : "Enabled";
-    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
     ImGui::AlignTextToFramePadding();
     ImGui::Text("%s", std::format("Simulation: {}", Simulation::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
@@ -34,7 +32,6 @@ void drawSimulationPauseGUI() {
 
 void drawElectricToggleGUI() {
     std::string buttonText = Electric::on() ? "Disable" : "Enable";
-    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
     ImGui::AlignTextToFramePadding();
     ImGui::Text("%s", std::format("Electric: {}", Electric::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
@@ -51,7 +48,6 @@ void drawElectricToggleGUI() {
 
 void drawGravityToggleGUI() {
     std::string buttonText = Gravity::on() ? "Disable" : "Enable";
-    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
     ImGui::AlignTextToFramePadding();
     ImGui::Text("%s", std::format("Gravity: {}", Gravity::on() ? "On" : "Off").c_str());
     ImGui::SameLine();
@@ -68,7 +64,6 @@ void drawGravityToggleGUI() {
 } // namespace
 
 void drawModeToggleGUI() {
-    ImGui::UpdateCurrentFontSize(modeButtonFontSize);
     ImGui::SeparatorText("Toggle Modes");
     ImGui::Spacing();
     GroupHolder group;

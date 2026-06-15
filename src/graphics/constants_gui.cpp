@@ -25,6 +25,7 @@ void drawGravityConstantGUI() {
 } // namespace
 
 void drawConstantsGUI() {
-    ImGui::Text("Edit Constants");
+    ImGui::SeparatorText("Edit Constants");
+    ImGui::Spacing();
     drawGravityConstantGUI();
 }
