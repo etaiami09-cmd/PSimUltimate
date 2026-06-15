@@ -12,6 +12,7 @@ int main() {
         }
         drawFrame();
     }
+
     closeWindow();
     return 0;
 }

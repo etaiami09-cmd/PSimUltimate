@@ -60,12 +60,14 @@ void deserializeParticle(size_t index, nlohmann::json& particles) {
 void serializeState(const std::string& path) {
     nlohmann::json json;
     serializeConstants(json);
-    json["Particles"] = {};
+    json["Particles"] = nlohmann::json::array();
+    json["Particles"].get_ref<nlohmann::json::array_t&>().reserve(Particles::get().size());
     for (size_t i = 0; i < Particles::get().size(); i++) {
         serializeParticle(json, i);
     }
+    auto serialized = json.dump();
     std::ofstream file(path);
-    file << std::setw(4) << json << "\n";
+    file << std::setw(4) << serialized << "\n";
 }
 
 void deserializeState(const std::string& path) {
