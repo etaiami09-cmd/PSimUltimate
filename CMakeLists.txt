@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_COMPILER "C:\\Program Files\\LLVM\\bin\\clang++.exe")
 set(CMAKE_C_COMPILER "C:\\Program Files\\LLVM\\bin\\clang.exe")
@@ -30,6 +30,7 @@ include_directories(include)
 include_directories(include/inlines)
 include_directories(extern/imgui)
 include_directories(extern/rlImGui)
+include_directories(extern/nlohmann)
 
 file(GLOB_RECURSE SOURCES
     "src/*.cpp"

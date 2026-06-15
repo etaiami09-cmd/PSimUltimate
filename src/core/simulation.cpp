@@ -1,7 +1,7 @@
 #include "simulation.hpp"
 
 namespace {
-bool isActive = true;
+bool isActive = false;
 } // namespace
 
 void Simulation::start() noexcept {

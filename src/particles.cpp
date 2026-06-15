@@ -30,6 +30,16 @@ void Particles::add(Position pos, Velocity vel, float radius, float mass) {
     forces.emplace_back();
 }
 
+void Particles::set(size_t index, Position pos, Velocity vel, float radius, float mass) noexcept {
+    if (index < particles.size()) {
+        particles[index] = Particle{pos, vel, radius, mass};
+    }
+}
+
+void Particles::resize(size_t size) noexcept {
+    particles.resize(size);
+}
+
 void Particles::reset() noexcept {
     particles.clear();
     charges.clear();

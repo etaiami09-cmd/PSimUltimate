@@ -3,6 +3,7 @@ _deps/*
 .claude/*
 CMakeFiles/*
 build/*
+build_opt/*
 imgui.ini
 CMakeCache.txt
 .clangd

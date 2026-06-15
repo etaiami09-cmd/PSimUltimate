@@ -4,7 +4,6 @@
 #include "particles.hpp"
 
 int main() {
-
     startWindow();
 
     while (!WindowShouldClose()) {
@@ -13,7 +12,6 @@ int main() {
         }
         drawFrame();
     }
-
     closeWindow();
     return 0;
 }
