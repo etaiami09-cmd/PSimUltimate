@@ -16,7 +16,7 @@ std::vector<Electric::Charge> charges;
 constexpr float defaultGravity = 5;
 float gravity = defaultGravity;
 bool gravityActive = false;
-constexpr float defaultK = 5e05;
+constexpr float defaultK = 5e3;
 float kConstant = defaultK;
 } // namespace
 

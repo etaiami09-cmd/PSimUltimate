@@ -4,18 +4,15 @@
 #include "toggles_gui.hpp"
 #include "graphical.hpp"
 #include "imgui.h"
-#include "imgui_internal.h"
 #include "simulation.hpp"
 #include "holder.hpp"
 #include "particles.hpp"
-#include "simulation.hpp"
 
 namespace {
 constexpr ImVec2 modeToggleButtonSize(90, 30);
-constexpr int modeButtonFontSize = 19;
 
 void drawSimulationPauseGUI() {
-    std::string buttonText = Simulation::on() ? "Disable" : "Enabled";
+    std::string buttonText = Simulation::on() ? "Disable" : "Enable";
     ImGui::AlignTextToFramePadding();
     ImGui::Text("%s", std::format("Simulation: {}", Simulation::on() ? "On" : "Off").c_str());
     ImGui::SameLine();

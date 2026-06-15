@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_COMPILER "C:\\Program Files\\LLVM\\bin\\clang++.exe")
 set(CMAKE_C_COMPILER "C:\\Program Files\\LLVM\\bin\\clang.exe")
 
-project(ParticleSimulatorUltimate VERSION 0.1.2 LANGUAGES CXX)
+project(ParticleSimulatorUltimate VERSION 0.1.3 LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
