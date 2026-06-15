@@ -24,8 +24,8 @@ std::span<const Particle> Particles::get() noexcept {
     return std::span{particles};
 }
 
-void Particles::add(Position pos, Velocity vel, float radius) {
-    particles.emplace_back(pos, vel, radius);
+void Particles::add(Position pos, Velocity vel, float radius, float mass) {
+    particles.emplace_back(pos, vel, radius, mass);
     charges.push_back(0);
     forces.emplace_back();
 }
@@ -37,12 +37,12 @@ void Particles::reset() noexcept {
 }
 
 namespace {
-void tickGravity(float dt) {
-    for (auto& particle : particles) {
-        particle.setVelocity(particle.getVelocity() + Velocity{0, Gravity::get() * dt});
+void tickGravity() {
+    for (size_t i = 0; i < particles.size(); i++) {
+        forces[i] += Force{0, gravity * particles[i].getMass()};
     }
 }
-void tickElectric(float dt) {
+void tickElectric() {
     for (size_t i = 0; i < particles.size(); i++) {
         for (size_t j = 0; j < particles.size(); j++) {
             if (i == j) {
@@ -51,16 +51,17 @@ void tickElectric(float dt) {
             auto force = coulombForce(
                 ElectricParticle{particles[i], charges[i]},
                 ElectricParticle{particles[j], charges[j]}
-            ) * (dt / 2);
+            );
             forces[i] += force;
             forces[j] -= force;
         }
     }
 }
 void tickForces() {
-    // placeholder - just copies forces to velocity. mass does not exist yet
     for (size_t i = 0; i < forces.size(); i++) {
-        particles[i].setVelocity(particles[i].getVelocity() + Velocity{forces[i].x, forces[i].y});
+        particles[i].setVelocity(particles[i].getVelocity()
+                + Velocity{forces[i].x / particles[i].getMass(),
+                        forces[i].y / particles[i].getMass()});
         forces[i] = {0, 0};
     }
 }
@@ -68,10 +69,10 @@ void tickForces() {
 
 void Particles::tick(float dt) noexcept {
     if (Gravity::on()) {
-        tickGravity(dt);
+        tickGravity();
     }
     if (Electric::on()) {
-        tickElectric(dt);
+        tickElectric();
     }
     tickForces();
     for (auto& part : particles) {

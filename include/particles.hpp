@@ -10,7 +10,7 @@ constexpr float defaultDt = 0.016f;
 
 namespace Particles {
     std::span<const Particle> get() noexcept;
-    void add(Position pos, Velocity vel, float radius);
+    void add(Position pos, Velocity vel, float radius, float mass);
     void reset() noexcept;
     void tick(float dt=defaultDt) noexcept;
 } // namespace Particles

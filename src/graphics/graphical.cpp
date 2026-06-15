@@ -66,7 +66,7 @@ void drawElectricParticles() {
             color = (charge.value() > 0) ? BLUE : RED;
         }
         DrawCircle(
-            static_cast<int>(particles[i].getPosition().x),
+            static_cast<int>(particles[i].getPosition().x + GUIWidth),
             static_cast<int>(particles[i].getPosition().y),
             particles[i].getRadius(), color
         );
@@ -81,7 +81,7 @@ void drawParticles() {
         auto particles = Particles::get();
         for (const auto& particle : particles) {
             DrawCircle(
-                static_cast<int>(particle.getPosition().x),
+                static_cast<int>(particle.getPosition().x + GUIWidth),
                 static_cast<int>(particle.getPosition().y),
                 particle.getRadius(), RED);
         }

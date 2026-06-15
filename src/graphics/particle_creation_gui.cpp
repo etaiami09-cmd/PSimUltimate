@@ -8,12 +8,14 @@
 #include "particle_creation_gui.hpp"
 
 namespace {
+constexpr int defaultRadius = 10;
 int newParticleX = 0;
 int newParticleY = 0;
 int newParticleVelX = 0;
 int newParticleVelY = 0;
-float newParticleRadius = 0;
+float newParticleRadius = defaultRadius;
 float newParticleCharge = 0;
+float newParticleMass = 1;
 
 void vecInput(const char* name, int* xTarget, int* yTarget) {
     ImGui::TextUnformatted(name);
@@ -41,13 +43,14 @@ void drawParticleCreationGUI() {
     ImGui::InputFloat("Radius", &newParticleRadius);
     vecInput("Position", &newParticleX, &newParticleY);
     vecInput("Velocity", &newParticleVelX, &newParticleVelY);
+    valueInput("Mass", &newParticleMass);
     valueInput("Charge", &newParticleCharge);
     ImGui::Text("Create Particle");
     if (ImGui::Button("Create", PSimImpl::particleCreationButtonSize)) {
         Particles::add(
             Position{static_cast<float>(newParticleX), static_cast<float>(newParticleY)},
             Velocity{static_cast<float>(newParticleVelX), static_cast<float>(newParticleVelY)},
-            newParticleRadius
+            newParticleRadius, newParticleMass
         );
         Electric::set(Particles::get().size() - 1, newParticleCharge);
     }
