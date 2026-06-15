@@ -13,6 +13,7 @@ int newParticleY = 0;
 int newParticleVelX = 0;
 int newParticleVelY = 0;
 float newParticleRadius = 0;
+float newParticleCharge = 0;
 
 void vecInput(const char* name, int* xTarget, int* yTarget) {
     ImGui::TextUnformatted(name);
@@ -25,6 +26,11 @@ void vecInput(const char* name, int* xTarget, int* yTarget) {
     ImGui::SameLine();
     ImGui::InputInt(std::format("##{}_y", name).c_str(), yTarget);
 }
+void valueInput(const char* name, float* target) {
+    ImGui::AlignTextToFramePadding();
+    ImGui::TextUnformatted(name);
+    ImGui::InputFloat(std::format("##{}_constant", name).c_str(), target);
+}
 } // namespace
 
 void drawParticleCreationGUI() {
@@ -35,6 +41,7 @@ void drawParticleCreationGUI() {
     ImGui::InputFloat("Radius", &newParticleRadius);
     vecInput("Position", &newParticleX, &newParticleY);
     vecInput("Velocity", &newParticleVelX, &newParticleVelY);
+    valueInput("Charge", &newParticleCharge);
     ImGui::Text("Create Particle");
     if (ImGui::Button("Create", PSimImpl::particleCreationButtonSize)) {
         Particles::add(
@@ -42,6 +49,7 @@ void drawParticleCreationGUI() {
             Velocity{static_cast<float>(newParticleVelX), static_cast<float>(newParticleVelY)},
             newParticleRadius
         );
+        Electric::set(Particles::get().size() - 1, newParticleCharge);
     }
     ImGui::EndGroup();
 }

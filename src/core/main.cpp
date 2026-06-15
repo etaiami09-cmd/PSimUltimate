@@ -2,7 +2,6 @@
 #include "graphical.hpp"
 #include "simulation.hpp"
 #include "particles.hpp"
-#include "imgui.h"
 
 int main() {
 

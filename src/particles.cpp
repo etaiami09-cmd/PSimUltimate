@@ -26,17 +26,14 @@ std::span<const Particle> Particles::get() noexcept {
 
 void Particles::add(Position pos, Velocity vel, float radius) {
     particles.emplace_back(pos, vel, radius);
-    if (electricActive) {
-        charges.push_back(0);
-    }
+    charges.push_back(0);
     forces.emplace_back();
 }
 
 void Particles::reset() noexcept {
     particles.clear();
-    if (electricActive) {
-        charges.clear();
-    }
+    charges.clear();
+    forces.clear();
 }
 
 namespace {
@@ -113,7 +110,6 @@ void Gravity::toggle() noexcept {
 void Electric::init() noexcept {
     if (!electricActive) {
         electricActive = true;
-        charges = std::vector<Charge>(particles.size());
     }
 }
 
@@ -125,7 +121,6 @@ void Electric::set(size_t index, Charge charge) noexcept {
 
 void Electric::finish() noexcept {
     electricActive = false;
-    charges.clear();
 }
 
 void Electric::toggle() noexcept {
