@@ -49,4 +49,4 @@ cmake --build build --config Release
 > **Note:** The first configure step will clone the raylib repository from GitHub, which may take a moment depending on your connection speed.
 
 ## Credits
-This project heavily utilizes 4 incredible open source libraries: nlohmann/json, Raylib, Dear ImGui, and rlImGui to bind the previous two.
+This project heavily utilizes 5 incredible open source libraries: Raylib, Dear ImGui, rlImGui, nlohmann/json, and a slightly altered version of portable-file-dialogs.

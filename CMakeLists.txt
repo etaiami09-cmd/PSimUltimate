@@ -31,6 +31,7 @@ include_directories(include/inlines)
 include_directories(extern/imgui)
 include_directories(extern/rlImGui)
 include_directories(extern/nlohmann)
+include_directories(extern/portable-file-dialogs)
 
 file(GLOB_RECURSE SOURCES
     "src/*.cpp"
