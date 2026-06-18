@@ -2,6 +2,7 @@
 #include "graphical-impl.hpp"
 #include "graphics_callbacks.hpp"
 #include "imgui_internal.h"
+#include "module_gui.hpp"
 #include "raylib.h"
 #include "rlImGui.h"
 #include "imgui.h"
@@ -55,6 +56,7 @@ void drawGUI() {
     ImGui::UpdateCurrentFontSize(ImGui::GetDefaultFont()->LegacySize);
     drawParticleCreationGUI();
     drawConstantsGUI();
+    drawModuleGUI();
     drawAboutWindow();
     ImGui::End();
     
