@@ -29,6 +29,7 @@ void Particles::set(size_t index, Position pos, Velocity vel, float radius, floa
 
 void Particles::resize(size_t size) noexcept {
     particles.resize(size);
+    forces.resize(size);
 }
 
 void Particles::reset() noexcept {
