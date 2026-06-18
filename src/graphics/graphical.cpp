@@ -4,6 +4,7 @@
 #include "imgui_internal.h"
 #include "module_gui.hpp"
 #include "raylib.h"
+#include "module.hpp"
 #include "rlImGui.h"
 #include "imgui.h"
 #include "particles.hpp"
@@ -80,7 +81,9 @@ void drawFrame() {
     ClearBackground(WHITE);
     drawParticles();
     for (const auto& graphicsHandler : getGraphicsHandlers()) {
-        graphicsHandler(Particles::get());
+        if (getModules()[graphicsHandler.moduleIndex].active) {
+            graphicsHandler(Particles::get());
+        }
     }
     drawGUI();
     EndDrawing();

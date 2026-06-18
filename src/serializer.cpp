@@ -64,12 +64,13 @@ void deserializeParticle(size_t index, nlohmann::json& particles) {
         particles[index]["Velocity"][1].get<float>()
     };
     std::vector<float> attributeValues;
-    attributeValues.resize(getAttributes().size());
+    attributeValues.clear();
+    attributeValues.reserve(getAttributes().size());
     for (const auto& attribute : getAttributes()) {
         attributeValues.push_back(particles[index][attribute.name].get<float>());
     }
     addNewParticleAttributes(attributeValues);
-    Particles::add(position, velocity, radius, mass);
+    Particles::set(index, position, velocity, radius, mass);
 }
 } // namespace
 

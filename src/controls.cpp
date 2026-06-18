@@ -34,7 +34,7 @@ void registerKeybinds() noexcept {
             pfd::opt::none
         );
         auto file = fileDialog.result();
-        if (file.size() != 0) {
+        if (!file.empty()) {
             deserializeState(file[0]);
         }
     });

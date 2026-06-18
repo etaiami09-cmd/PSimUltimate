@@ -28,7 +28,7 @@ Force coulombForce(const ElectricParticle& a, const ElectricParticle& b, float c
     auto distanceSquared = deltas.magnitude_squared();
     auto force = (coulombs * a.charge * b.charge) / (distanceSquared + distancePadding);
     force = std::clamp(force, - maxForce * maxForce, maxForce * maxForce);
-    auto distance = std::sqrt(distanceSquared);
+    auto distance = std::sqrt(distanceSquared + distancePadding);
     auto factor = force / distance;
     return Force{deltas * factor};
 }
@@ -39,10 +39,7 @@ void tickElectric(std::span<Particle> particles, std::span<Force> forces) {
     if (!coulombsOptional.has_value()) {return;}
     float coulombsValue = coulombsOptional.value();
     for (size_t i = 0; i < particles.size(); i++) {
-        for (size_t j = 0; j < particles.size(); j++) {
-            if (i == j) {
-                continue;
-            }
+        for (size_t j = i + 1; j < particles.size(); j++) {
             auto force = coulombForce(
                 ElectricParticle{particles[i], charges[i]},
                 ElectricParticle{particles[j], charges[j]},
