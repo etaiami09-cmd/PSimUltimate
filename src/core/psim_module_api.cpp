@@ -1,4 +1,5 @@
 #include <memory>
+#include <ranges>
 #include <string>
 #include <functional>
 #include <span>
@@ -53,11 +54,11 @@ std::function<void(float)>
     };
 }
 
-Module& getModuleByName(const std::string& name) {
-    return *std::ranges::find_if(getModules(), [&](const auto& moduleName) {
-        return name == moduleName;
-        }, &Module::name
-    );
+size_t getModuleIndexByName(const std::string& name) {
+    return *std::ranges::find_if(std::ranges::views::iota(size_t{0}, getModules().size()),
+        [&](const auto& index) {
+            return getModules()[index].name == name;
+    });
 }
 
 } // namespace
@@ -81,7 +82,7 @@ extern "C" void PSIM_CALL regForce(const char* module, size_t moduleLen,
     addForceHandler(
         ForceHandler{
             restructureFunction(forceHandler),
-            getModuleByName(std::string{module, moduleLen}),
+            getModuleIndexByName(std::string{module, moduleLen}),
         }
     );
 }
@@ -91,7 +92,7 @@ extern "C" void PSIM_CALL regVelocity(const char* module, size_t moduleLen,
     addVelocityHandler(
         VelocityHandler{
             restructureFunction(velocityHandler),
-            getModuleByName(std::string{module, moduleLen}),
+            getModuleIndexByName(std::string{module, moduleLen}),
         }
     );
 }
@@ -101,7 +102,7 @@ extern "C" void PSIM_CALL regPosition(const char* module, size_t moduleLen,
     addPositionHandler(
         PositionHandler{
             restructureFunction(positionHandler),
-            getModuleByName(std::string{module, moduleLen}),
+            getModuleIndexByName(std::string{module, moduleLen}),
         }
     );
 }
@@ -117,7 +118,7 @@ extern "C" void PSIM_CALL regRenderer(const char* module, size_t moduleLen, PSIM
     addGraphicsHandler(
         GraphicsHandler{
             restructureFunction(renderer),
-            getModuleByName(std::string{module, moduleLen}),
+            getModuleIndexByName(std::string{module, moduleLen}),
         }
     );
 }

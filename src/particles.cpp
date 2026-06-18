@@ -1,10 +1,10 @@
-#include <cstdio>
 #include <vector>
 #include <span>
+#include <cstddef>
 
 #include "physics_callbacks.hpp"
 #include "Particle.hpp"
-
+#include "module.hpp"
 #include "particles.hpp"
 
 namespace {
@@ -47,21 +47,24 @@ void tickForces() {
 }
 void accumulateForces() {
     for (const auto& forceHandler : getForceHandlers()) {
-        if (forceHandler.module.active) {
+        const Module& module = getModules()[forceHandler.moduleIndex];
+        if (module.active) {
             forceHandler(particles, forces);
         }
     }
 }
 void accumulateVelocity() {
     for (const auto& velocityHandler : getVelocityHandlers()) {
-        if (velocityHandler.module.active) {
+        const Module& module = getModules()[velocityHandler.moduleIndex];
+        if (module.active) {
             velocityHandler(particles);
         }
     }
 }
 void callPositionHandlers() {
     for (const auto& positionHandler : getPositionHandlers()) {
-        if (positionHandler.module.active) {
+        const Module& module = getModules()[positionHandler.moduleIndex];
+        if (module.active) {
             positionHandler(particles);
         }
     }

@@ -4,6 +4,7 @@
 #include <string>
 #include <span>
 #include <functional>
+#include <cstddef>
 
 struct Module {
     std::string name;
@@ -17,7 +18,7 @@ struct Module {
 template<typename... Args>
 struct ModuleCallback {
     std::function<void(Args...)> callback;
-    Module& module;
+    size_t moduleIndex;
 
     void operator()(Args... args) const {
         callback(args...);

@@ -11,6 +11,7 @@ int main() {
     loadBuiltinModuleTable();
     initElectrostaticModule();
     initGravityModule();
+    loadModule("example_module/module.dll");
     startWindow();
 
     while (!WindowShouldClose()) {

@@ -12,16 +12,7 @@
 #include "attributes.hpp"
 #include "builtin_modules.hpp"
 #include "psim_module_api.hpp"
-// HERE IS WHAT YOU NEED TO DO
-// 1. IMPLEMENT GLOBAL STATE IN THE PSIM_MODULE_API HEADER
-// SO THAT IT **DEFINES** A C ABI INITIALIZE MODULE FUNCTION
-// THAT LOADS A C++ FUNCTION WHICH WAS FORWARD-DECLARED IN THE HEADER
-// AND IS LATER DEFINED IN THE MODULE AUTHOR'S C++ MAIN FILE
-// THE INITIALIZER FUNCTION IS RESPONSIBLE FOR LOADING ALL THE ABI
-// FUNCTIONS INTO GLOBAL STATE AND RESTRUCTURING THEM INTO
-// THAT CAN BE CALLED BY THE MODULE AUTHOR
-// EFFECTIVELY GIVING THE SAME API I WANTED
-// 2. ENJOY BEING AWESOME
+
 namespace {
 
 constexpr float maxForce = 10;
@@ -79,19 +70,16 @@ void drawElectricParticles(std::span<const Particle> particles) {
     }
 }
 
-void tickGravity(std::span<Particle> particles, std::span<Force> forces) {
-    auto gravityOptional = getConstantValue("Gravity");
-    if (!gravityOptional.has_value()) {return;}
-    float gravity = gravityOptional.value();
-    for (size_t i = 0; i < particles.size(); i++) {
-        forces[i] += Force{0, gravity * particles[i].getMass()};
-    }
-}
-
 constexpr float defaultGravity = 5;
 float gravity = defaultGravity;
 constexpr float defaultK = 9e03;
 float coulombs = defaultK;
+
+void tickGravity(std::span<Particle> particles, std::span<Force> forces) {
+    for (size_t i = 0; i < particles.size(); i++) {
+        forces[i] += Force{0, gravity * particles[i].getMass()};
+    }
+}
 
 } // namespace
 
