@@ -2,11 +2,12 @@
 #include <format>
 
 #include "toggles_gui.hpp"
+#include "graphical-impl.hpp"
 #include "graphical.hpp"
 #include "imgui.h"
 #include "simulation.hpp"
 #include "holder.hpp"
-#include "particles.hpp"
+#include "module.hpp"
 
 namespace {
 constexpr ImVec2 modeToggleButtonSize(90, 30);
@@ -27,10 +28,10 @@ void drawSimulationPauseGUI() {
     }
 }
 
-void drawElectricToggleGUI() {
-    std::string buttonText = Electric::on() ? "Disable" : "Enable";
+void drawModuleToggleGUI(Module& module) {
+    std::string buttonText = module.active ? "Disable" : "Enable";
     ImGui::AlignTextToFramePadding();
-    ImGui::Text("%s", std::format("Electric: {}", Electric::on() ? "On" : "Off").c_str());
+    ImGui::Text("%s", std::format("{}: {}", module.name, module.active ? "On" : "Off").c_str());
     ImGui::SameLine();
     StyleVarHolder holder(ImGuiStyleVar_ButtonTextAlign, PSimImpl::buttonAlignImVec);
     ImGui::SetCursorPosX(
@@ -38,26 +39,12 @@ void drawElectricToggleGUI() {
         + ImGui::GetContentRegionAvail().x
         - modeToggleButtonSize.x
     );
-    if (ImGui::Button(std::format("{}##electric_button", buttonText).c_str(), modeToggleButtonSize)) {
-        Electric::toggle();
+    if (ImGui::Button(std::format("{}##{}_button", buttonText, module.name).c_str(),
+    modeToggleButtonSize)) {
+        module.toggle();
     }
 }
 
-void drawGravityToggleGUI() {
-    std::string buttonText = Gravity::on() ? "Disable" : "Enable";
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("%s", std::format("Gravity: {}", Gravity::on() ? "On" : "Off").c_str());
-    ImGui::SameLine();
-    StyleVarHolder holder(ImGuiStyleVar_ButtonTextAlign, PSimImpl::buttonAlignImVec);
-    ImGui::SetCursorPosX(
-        ImGui::GetCursorPosX()
-        + ImGui::GetContentRegionAvail().x
-        - modeToggleButtonSize.x
-    );
-    if (ImGui::Button(std::format("{}##gravity_button", buttonText).c_str(), modeToggleButtonSize)) {
-        Gravity::toggle();
-    }
-}
 } // namespace
 
 void drawModeToggleGUI() {
@@ -65,6 +52,7 @@ void drawModeToggleGUI() {
     ImGui::Spacing();
     GroupHolder group;
     drawSimulationPauseGUI();
-    drawElectricToggleGUI();
-    drawGravityToggleGUI();
+    for (auto& module : getModules()) {
+        drawModuleToggleGUI(module);
+    }
 }

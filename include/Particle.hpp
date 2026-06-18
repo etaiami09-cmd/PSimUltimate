@@ -39,7 +39,7 @@ private:
 public:
     constexpr Particle() noexcept;
     constexpr Particle(Position position, Velocity velocity, float radius, float mass) noexcept;
-    constexpr Particle(const Particle& other) noexcept;
+    constexpr Particle(const Particle& other) noexcept = default;
     [[nodiscard]] const Position& getPosition() const noexcept;
     [[nodiscard]] const Velocity& getVelocity() const noexcept;
     [[nodiscard]] float getRadius() const noexcept;

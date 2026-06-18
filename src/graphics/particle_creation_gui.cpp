@@ -1,5 +1,8 @@
 #include <format>
+#include <vector>
+#include <cstddef>
 
+#include "attributes.hpp"
 #include "imgui.h"
 #include "graphical.hpp"
 #include "particles.hpp"
@@ -14,8 +17,8 @@ int newParticleY = 0;
 int newParticleVelX = 0;
 int newParticleVelY = 0;
 float newParticleRadius = defaultRadius;
-float newParticleCharge = 0;
 float newParticleMass = 1;
+std::vector<float> newParticleAttributes;
 
 void vecInput(const char* name, int* xTarget, int* yTarget) {
     ImGui::TextUnformatted(name);
@@ -36,6 +39,7 @@ void valueInput(const char* name, float* target) {
 } // namespace
 
 void drawParticleCreationGUI() {
+    newParticleAttributes.resize(getAttributes().size());
     ImGui::SeparatorText("New Particle");
     ImGui::Spacing();
     ImGui::BeginGroup();
@@ -43,7 +47,9 @@ void drawParticleCreationGUI() {
     vecInput("Velocity", &newParticleVelX, &newParticleVelY);
     valueInput("Radius", &newParticleRadius);
     valueInput("Mass", &newParticleMass);
-    valueInput("Charge", &newParticleCharge);
+    for (size_t i = 0; i < newParticleAttributes.size(); i++) {
+        valueInput(getAttributes()[i].name.c_str(), &newParticleAttributes[i]);
+    }
     ImGui::Text("Create Particle");
     if (ImGui::Button("Create", PSimImpl::particleCreationButtonSize)) {
         Particles::add(
@@ -51,7 +57,7 @@ void drawParticleCreationGUI() {
             Velocity{static_cast<float>(newParticleVelX), static_cast<float>(newParticleVelY)},
             newParticleRadius, newParticleMass
         );
-        Electric::set(Particles::get().size() - 1, newParticleCharge);
+        addNewParticleAttributes(newParticleAttributes);
     }
     ImGui::EndGroup();
 }

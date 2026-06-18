@@ -6,8 +6,6 @@
 constexpr Particle::Particle() noexcept = default;
 constexpr Particle::Particle(const Position position, const Velocity velocity, float radius, float mass) noexcept
 : position(position), velocity(velocity), radius(radius), mass(mass) {}
-constexpr Particle::Particle(const Particle& other) noexcept
-: position(other.position), velocity(other.velocity), radius(other.radius), mass(other.mass) {}
 
 [[nodiscard]] inline const Position& Particle::getPosition() const noexcept {
     return position;

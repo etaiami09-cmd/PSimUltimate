@@ -1,6 +1,6 @@
-#include <cstddef>
-
 #include "graphical.hpp"
+#include "graphical-impl.hpp"
+#include "graphics_callbacks.hpp"
 #include "imgui_internal.h"
 #include "raylib.h"
 #include "rlImGui.h"
@@ -35,6 +35,10 @@ void closeWindow() {
     CloseWindow();
 }
 
+int getPSimGUIWidth() {
+    return PSimImpl::GUIWidth;
+}
+
 namespace {
 
 void drawGUI() {
@@ -57,34 +61,13 @@ void drawGUI() {
     rlImGuiEnd();
 }
 
-void drawElectricParticles() {
-    auto particles = Particles::get();
-    for (size_t i = 0; i < particles.size(); i++) {
-        auto color = GRAY;
-        if (auto charge = Electric::get(i);
-            charge.has_value() && *charge != 0) {
-            color = (charge.value() > 0) ? BLUE : RED;
-        }
-        DrawCircle(
-            static_cast<int>(particles[i].getPosition().x + GUIWidth),
-            static_cast<int>(particles[i].getPosition().y),
-            particles[i].getRadius(), color
-        );
-    }
-}
-
 void drawParticles() {
-    if (Electric::on()) {
-        drawElectricParticles();
-    }
-    else {
-        auto particles = Particles::get();
-        for (const auto& particle : particles) {
-            DrawCircle(
-                static_cast<int>(particle.getPosition().x + GUIWidth),
-                static_cast<int>(particle.getPosition().y),
-                particle.getRadius(), RED);
-        }
+    auto particles = Particles::get();
+    for (const auto& particle : particles) {
+        DrawCircle(
+static_cast<int>(particle.getPosition().x + GUIWidth),
+static_cast<int>(particle.getPosition().y),
+particle.getRadius(), RED);
     }
 }
 } // namespace
@@ -94,6 +77,9 @@ void drawFrame() {
     BeginDrawing();
     ClearBackground(WHITE);
     drawParticles();
+    for (const auto& graphicsHandler : getGraphicsHandlers()) {
+        graphicsHandler(Particles::get());
+    }
     drawGUI();
     EndDrawing();
 }

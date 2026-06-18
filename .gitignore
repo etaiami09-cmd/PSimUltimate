@@ -4,6 +4,7 @@ _deps/*
 CMakeFiles/*
 build/*
 build_opt/*
+example_module/*
 imgui.ini
 CMakeCache.txt
 .clangd

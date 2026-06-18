@@ -4,6 +4,7 @@
 void startWindow();
 void closeWindow();
 void drawFrame();
+int getPSimGUIWidth();
 
 #include "inlines/graphical-impl.hpp"  // IWYU pragma: export
 

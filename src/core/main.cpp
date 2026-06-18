@@ -3,9 +3,14 @@
 #include "simulation.hpp"
 #include "particles.hpp"
 #include "controls.hpp"
+#include "builtin_modules.hpp"
+#include "load_module.hpp"
 
 int main() {
     registerKeybinds();
+    loadBuiltinModuleTable();
+    initElectrostaticModule();
+    initGravityModule();
     startWindow();
 
     while (!WindowShouldClose()) {
