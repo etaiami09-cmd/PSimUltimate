@@ -53,7 +53,7 @@ void drawGUI() {
     rlImGuiBegin();
     drawMenuBar();
     ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetFrameHeight()));
-    ImGui::SetNextWindowSize(ImVec2{GUIWidth, static_cast<float>(GetScreenHeight())});
+    ImGui::SetNextWindowSize(ImVec2{GUIWidth, static_cast<float>(GetScreenHeight()) - ImGui::GetFrameHeight()});
     ImGui::Begin("Controls", nullptr,
         ImGuiWindowFlags_NoMove
         | ImGuiWindowFlags_NoResize
