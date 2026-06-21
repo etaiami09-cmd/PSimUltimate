@@ -17,6 +17,7 @@ constexpr ImVec2 constantButtonSize(100, 20);
 constexpr ImVec4 appVersionColorRGBA(0.6f, 0.6f, 0.6f, 1.0f);
 constexpr int modeToggleHeaderPadding = 10;
 constexpr const char* repoURL = "https://github.com/etaiami09-cmd/PSimUltimate";
+constexpr const char* repoIssuesURL = "https://github.com/etaiami09-cmd/PSimUltimate/issues/new";
 } // namespace PSimImpl
 
 #endif

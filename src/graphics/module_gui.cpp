@@ -21,14 +21,18 @@ void drawModuleGUI() {
     ImGui::SeparatorText("Modules");
     ImGui::Spacing();
     if (ImGui::Button("Import Module", moduleImportButtonSize)) {
-        auto fileDialog = pfd::open_file(
-            "Open Module",
-            "",
-            {"Dynamically Linked Libraries", fileTypes}
-        );
-        auto selection = fileDialog.result();
-        if (!selection.empty()) {
-            loadModule(selection[0]);
-        }
+        loadModuleWithDialog();
+    }
+}
+
+void loadModuleWithDialog() {
+    auto fileDialog = pfd::open_file(
+        "Open Module",
+        "",
+        {"Dynamically Linked Libraries", fileTypes}
+    );
+    auto selection = fileDialog.result();
+    if (!selection.empty()) {
+        loadModule(selection[0]);
     }
 }

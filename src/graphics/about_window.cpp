@@ -1,5 +1,6 @@
 #include <format>
 
+#include "graphical-impl.hpp"
 #include "imgui.h"
 #include "graphical.hpp"
 #include "version.hpp"
@@ -28,6 +29,6 @@ void drawAboutWindow() {
     ImGui::Text("Report A Bug:");
     ImGui::SameLine();
     if (ImGui::TextLink("Click")) {
-        openShellURL("https://github.com/etaiami09-cmd/PSimUltimate/issues/new");
+        openShellURL(PSimImpl::repoIssuesURL);
     }
 }

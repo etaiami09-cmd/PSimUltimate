@@ -2,5 +2,6 @@
 #define PSIM_MODULE_GUI_HPP
 
 void drawModuleGUI();
+void loadModuleWithDialog();
 
 #endif

@@ -1,5 +1,7 @@
 #include "graphical.hpp"
+
 #include "graphical-impl.hpp"
+#include "menu_bar.hpp"
 #include "graphics_callbacks.hpp"
 #include "imgui_internal.h"
 #include "module_gui.hpp"
@@ -30,6 +32,10 @@ void startWindow() {
     SetTargetFPS(targetFPS);
     rlImGuiSetup(true);
     ImGui::PushFont(ImGui::GetIO().Fonts->AddFontDefault());
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImVec4 headerColor = style.Colors[ImGuiCol_TitleBgActive];
+    style.Colors[ImGuiCol_TitleBg] = headerColor;
+    style.Colors[ImGuiCol_TitleBgCollapsed] = headerColor;
 }
 
 void closeWindow() {
@@ -45,7 +51,8 @@ namespace {
 
 void drawGUI() {
     rlImGuiBegin();
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    drawMenuBar();
+    ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetFrameHeight()));
     ImGui::SetNextWindowSize(ImVec2{GUIWidth, static_cast<float>(GetScreenHeight())});
     ImGui::Begin("Controls", nullptr,
         ImGuiWindowFlags_NoMove
@@ -60,7 +67,6 @@ void drawGUI() {
     drawModuleGUI();
     drawAboutWindow();
     ImGui::End();
-    
     rlImGuiEnd();
 }
 
