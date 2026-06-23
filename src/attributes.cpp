@@ -39,8 +39,30 @@ void addNewParticleAttributes(const std::vector<float>& values) noexcept {
     }
 }
 
+void setParticleAttributes(size_t index, const std::vector<float>& values) noexcept {
+    if (index > Particles::get().size()) {return;}
+    for (size_t i = 0; i < attributes.size(); i++) {
+        attributes[i].values[index] = values[i];
+    }
+}
+
 void clearAttributeValues() noexcept {
     for (auto& attribute : attributes) {
         attribute.values.clear();
     }
+}
+
+void resizeAttributeValues(size_t newSize) noexcept {
+    for (auto& attribute : attributes) {
+        attribute.values.resize(newSize);
+    }
+}
+
+void pushDefaultParticleAttributes() noexcept {
+    std::vector<float> newValues{};
+    newValues.reserve(attributes.size());
+    for (auto& attribute : attributes) {
+        newValues.push_back(attribute.defaultValue);
+    }
+    addNewParticleAttributes(newValues);
 }

@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.30)
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_COMPILER "C:\\Program Files\\LLVM\\bin\\clang++.exe")
-set(CMAKE_C_COMPILER "C:\\Program Files\\LLVM\\bin\\clang.exe")
+set(CMAKE_CXX_COMPILER "C:\\msys64\\ucrt64\\bin\\clang++.exe")
+set(CMAKE_C_COMPILER "C:\\msys64\\ucrt64\\bin\\clang.exe")
 
 project(ParticleSimulatorUltimate VERSION 0.1.4 LANGUAGES CXX)
 

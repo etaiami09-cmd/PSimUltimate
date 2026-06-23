@@ -3,6 +3,8 @@
 #include "Particle.hpp"
 #include "Vec2.hpp"
 #include "catch2/catch_test_macros.hpp"
+#include "catch2/matchers/catch_matchers.hpp"
+#include "catch2/matchers/catch_matchers_floating_point.hpp"
 #include <type_traits>
 
 TEST_CASE("Vec2 expression arithmetic functions correctly", "[math][vec2]") {
@@ -39,6 +41,20 @@ TEST_CASE("Vec2 expression arithmetic functions correctly", "[math][vec2]") {
         auto result = -vec1;
         REQUIRE(result.x == -vec1.x);
         REQUIRE(result.y == -vec1.y);
+    }
+}
+
+TEST_CASE("Magnitudes are correct", "[math][vec2]") {
+    SECTION("Magnitude squared") {
+        constexpr float error{0.0000001f};
+        Vec2<float> vec{3.0f, 4.0f};
+        REQUIRE_THAT(vec.magnitude_squared(), Catch::Matchers::WithinAbs(25.0f, error));
+    }
+
+    SECTION("Normal magnitude") {
+        constexpr float error{0.0000001f};
+        Vec2<float> vec{3.0f, 4.0f};
+        REQUIRE_THAT(vec.magnitude(), Catch::Matchers::WithinAbs(5.0f, error));
     }
 }
 

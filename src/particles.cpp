@@ -2,6 +2,7 @@
 #include <span>
 #include <cstddef>
 
+#include "attributes.hpp"
 #include "physics_callbacks.hpp"
 #include "Particle.hpp"
 #include "module.hpp"
@@ -16,9 +17,14 @@ std::span<const Particle> Particles::get() noexcept {
     return std::span{particles};
 }
 
+std::span<const Force> Particles::getForces() noexcept {
+    return std::span{forces};
+}
+
 void Particles::add(Position pos, Velocity vel, float radius, float mass) {
     particles.emplace_back(pos, vel, radius, mass);
     forces.emplace_back();
+    pushDefaultParticleAttributes();
 }
 
 void Particles::set(size_t index, Position pos, Velocity vel, float radius, float mass) noexcept {
@@ -30,11 +36,13 @@ void Particles::set(size_t index, Position pos, Velocity vel, float radius, floa
 void Particles::resize(size_t size) noexcept {
     particles.resize(size);
     forces.resize(size);
+    resizeAttributeValues(size);
 }
 
 void Particles::reset() noexcept {
     particles.clear();
     forces.clear();
+    clearAttributeValues();
 }
 
 namespace {

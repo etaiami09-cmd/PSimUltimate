@@ -50,3 +50,5 @@ cmake --build build --config Release
 
 ## Credits
 This project heavily utilizes 5 incredible open source libraries: Raylib, Dear ImGui, rlImGui, nlohmann/json, and a slightly altered version of portable-file-dialogs.
+
+This project also uses Catch2 for testing.

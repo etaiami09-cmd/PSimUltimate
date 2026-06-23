@@ -69,7 +69,7 @@ void deserializeParticle(size_t index, nlohmann::json& particles) {
     for (const auto& attribute : getAttributes()) {
         attributeValues.push_back(particles[index][attribute.name].get<float>());
     }
-    addNewParticleAttributes(attributeValues);
+    setParticleAttributes(index, attributeValues);
     Particles::set(index, position, velocity, radius, mass);
 }
 } // namespace
@@ -96,7 +96,6 @@ void deserializeState(const std::string& path) {
     deserializeConstants(json);
     size_t particleCount = json["Particles"].size();
     Particles::resize(particleCount);
-    clearAttributeValues();
     for (size_t i = 0; i < particleCount; i++) {
         deserializeParticle(i, json["Particles"]);
     }

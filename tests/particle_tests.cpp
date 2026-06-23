@@ -53,6 +53,14 @@ TEST_CASE("Particles namespace ticks cleanly", "[physics][particles][math]") {
         REQUIRE_THAT(p2.getPosition().y, Catch::Matchers::WithinAbs(3.524f, error));
     }
 
+    SECTION("0.0f dt tick") {
+        Particles::reset();
+        Particles::add({0, 0}, {20, 20}, 10, 1);
+        Particles::tick(0.0f);
+        REQUIRE(Particles::get()[0].getPosition().x == 0);
+        REQUIRE(Particles::get()[0].getPosition().y == 0);
+    }
+
 }
 
 TEST_CASE("Particles namespace accumulates forces correctly", "[physics][particles][math]") {
@@ -109,6 +117,58 @@ TEST_CASE("Particles namespace handles particles correctly", "[particles][memory
         }
         Particles::reset();
         REQUIRE(Particles::get().empty());
+    }
+}
+
+TEST_CASE("Getters and setters work", "[particle]") {
+    Particle p{Position{1.0f, 2.0f}, Velocity{0.0f, 0.0f}, 10, 1};
+
+    SECTION("Initial getters") {
+        REQUIRE(p.getPosition().x == 1.0f);
+        REQUIRE(p.getPosition().y == 2.0f);
+        REQUIRE(p.getVelocity().x == 0.0f);
+        REQUIRE(p.getVelocity().y == 0.0f);
+        REQUIRE(p.getRadius() == 10.0f);
+        REQUIRE(p.getMass() == 1.0f);
+    }
+
+    SECTION("With setting") {
+        p.setPosition(Position{0.0f, 0.0f});
+        p.setVelocity(Velocity{1.0f, 1.0f});
+        p.setMass(10.0f);
+        p.setRadius(1.0f);
+        REQUIRE(p.getPosition().x == 0.0f);
+        REQUIRE(p.getPosition().y == 0.0f);
+        REQUIRE(p.getVelocity().x == 1.0f);
+        REQUIRE(p.getVelocity().y == 1.0f);
+        REQUIRE(p.getRadius() == 1.0f);
+        REQUIRE(p.getMass() == 10.0f);
+    }
+}
+
+TEST_CASE("Particles resize and set", "[partices][memory]") {
+    Particles::reset();
+
+    SECTION("Resizing") {
+        Particles::resize(1000);
+        REQUIRE(Particles::get().size() == 1000);
+        REQUIRE(Particles::getForces().size() == 1000);
+        Particles::resize(100);
+        REQUIRE(Particles::get().size() == 100);
+        REQUIRE(Particles::getForces().size() == 100);
+    }
+
+    SECTION("Setting") {
+        Particles::resize(1000);
+        Particles::set(0, Position{1.0f, 1.0f}, Velocity{2.0f, 2.0f}, 3.0f, 4.0f);
+        auto& p = Particles::get()[0];
+        REQUIRE(p.getPosition().x == 1.0f);
+        REQUIRE(p.getPosition().y == 1.0f);
+        REQUIRE(p.getVelocity().x == 2.0f);
+        REQUIRE(p.getVelocity().y == 2.0f);
+        REQUIRE(p.getRadius() == 3.0f);
+        REQUIRE(p.getMass() == 4.0f);
+        REQUIRE(Particles::get().size() == 1000);
     }
 }
 
