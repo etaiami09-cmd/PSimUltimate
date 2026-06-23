@@ -7,6 +7,8 @@ set(CMAKE_C_COMPILER "C:\\Program Files\\LLVM\\bin\\clang.exe")
 
 project(ParticleSimulatorUltimate VERSION 0.1.4 LANGUAGES CXX)
 
+enable_testing()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
@@ -39,7 +41,26 @@ file(GLOB_RECURSE SOURCES
     "extern/rlImGui/*.cpp"    
 )
 
-add_executable(PSimUlt ${SOURCES})
+file(GLOB_RECURSE ENGINE_SOURCES
+    "src/*.cpp"
+    "extern/imgui/*.cpp"
+    "extern/rlImGui/*.cpp")
+list(REMOVE_ITEM ENGINE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp")
+add_library(PSimTestableLib STATIC ${ENGINE_SOURCES})
+target_include_directories(PSimTestableLib PUBLIC 
+    include
+    include/inlines
+    extern/imgui
+    extern/rlImGui
+    extern/nlohmann
+    extern/portable-file-dialogs
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+target_link_libraries(PSimTestableLib PUBLIC raylib)
+target_compile_definitions(PSimTestableLib PRIVATE NO_FONT_AWESOME)
+
+add_executable(PSimUlt src/core/main.cpp)
+target_link_libraries(PSimUlt PRIVATE PSimTestableLib)
 
 set_target_properties(PSimUlt PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
 
@@ -47,10 +68,8 @@ target_link_options(PSimUlt PRIVATE $<$<CONFIG:Release>:-Xlinker /entry:mainCRTS
 
 target_include_directories(PSimUlt PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-# 1. Define your own application installation rule
 install(TARGETS PSimUlt DESTINATION bin)
 
-# 2. Setup standard cross-platform CPack configurations
 set(CPACK_PACKAGE_NAME "Particle Simulator")
 set(CPACK_PACKAGE_VENDOR "etaiami09-cmd")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
@@ -59,14 +78,13 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}")
 set(CPACK_PACKAGE_EXECUTABLES "PSimUlt" "Particle Simulator")
 
-# 3. Explicitly tell CPack to ONLY package your executable target, ignoring raylib's build files
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};ParticleSimulatorUltimate;ALL;/")
 
-# 4. Define the generic installer type
 set(CPACK_GENERATOR "NSIS")
 
-# 5. Correctly load the CPack module (Case-Sensitive!)
 include(CPack)
 target_compile_definitions(PSimUlt PRIVATE NO_FONT_AWESOME)
 
 target_link_libraries(PSimUlt PRIVATE raylib)
+
+add_subdirectory(tests)
