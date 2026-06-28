@@ -54,26 +54,38 @@ void tickForces() {
     }
 }
 void accumulateForces() {
-    for (const auto& forceHandler : getForceHandlers()) {
-        const Module& module = getModules()[forceHandler.moduleIndex];
+    for (const auto moduleIndex : getModuleIndexOrders()) {
+        const auto& module = getModules()[moduleIndex];
         if (module.active) {
-            forceHandler(particles, forces);
+            for (const auto& forceHandler : getForceHandlers()) {
+                if (forceHandler.moduleIndex == moduleIndex) {
+                    forceHandler(particles, forces);
+                }
+            }
         }
     }
 }
 void accumulateVelocity() {
-    for (const auto& velocityHandler : getVelocityHandlers()) {
-        const Module& module = getModules()[velocityHandler.moduleIndex];
+    for (const auto moduleIndex : getModuleIndexOrders()) {
+        const auto& module = getModules()[moduleIndex];
         if (module.active) {
-            velocityHandler(particles);
+            for (const auto& velocityHandler : getVelocityHandlers()) {
+                if (velocityHandler.moduleIndex == moduleIndex) {
+                    velocityHandler(particles);
+                }
+            }
         }
     }
 }
 void callPositionHandlers() {
-    for (const auto& positionHandler : getPositionHandlers()) {
-        const Module& module = getModules()[positionHandler.moduleIndex];
+    for (const auto moduleIndex : getModuleIndexOrders()) {
+        const auto& module = getModules()[moduleIndex];
         if (module.active) {
-            positionHandler(particles);
+            for (const auto& positionHandler : getPositionHandlers()) {
+                if (positionHandler.moduleIndex == moduleIndex) {
+                    positionHandler(particles);
+                }
+            }
         }
     }
 }

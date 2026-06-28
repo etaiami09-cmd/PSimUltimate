@@ -59,7 +59,7 @@ void drawElectricParticles(std::span<const Particle> particles) {
         DrawCircle(
             static_cast<int>(particles[i].getPosition().x
                              + static_cast<float>(getPSimGUIWidth())),
-            static_cast<int>(particles[i].getPosition().y),
+            static_cast<int>(particles[i].getPosition().y + ImGui::GetFrameHeight()),
             particles[i].getRadius(), color
         );
     }
@@ -86,7 +86,7 @@ void initElectrostaticModule() noexcept {
                          coulombs = newK;
                      });
     registerParticleAttribute(module, "Charge", 0,
-                              std::numeric_limits<float>::min(),
+                              std::numeric_limits<float>::lowest(),
                               std::numeric_limits<float>::max());
     registerForce(module, tickElectric);
     registerRenderer(module, drawElectricParticles);

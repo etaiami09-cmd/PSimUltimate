@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <cstddef>
 
 #include "particles.hpp"
 

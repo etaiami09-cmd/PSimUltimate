@@ -13,6 +13,8 @@ struct Constant {
     float minValue;
     float maxValue;
     std::function<void(float)> onChange;
+
+    void set();
 };
 
 void addConstant(const std::string& name, float defaultValue,

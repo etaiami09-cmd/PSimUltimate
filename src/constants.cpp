@@ -10,8 +10,13 @@ namespace {
 std::unordered_map<std::string, Constant> constants;
 } // namespace
 
+void Constant::set() {
+    value = buffer;
+    onChange(value);
+}
+
 void addConstant(const std::string& name, float defaultValue,
-    float minValue, float maxValue, std::function<void(float)>&& onChange) noexcept {
+                 float minValue, float maxValue, std::function<void(float)>&& onChange) noexcept {
     constants[name] = {defaultValue, defaultValue,
         defaultValue, minValue, maxValue, std::move(onChange)};
 }

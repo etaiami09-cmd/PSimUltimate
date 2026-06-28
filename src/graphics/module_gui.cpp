@@ -6,6 +6,8 @@
 
 #include "module_gui.hpp"
 
+#include "module_order_gui.hpp"
+
 namespace {
 #if defined(_WIN32)
 const auto fileTypes{"*.dll"};
@@ -23,6 +25,7 @@ void drawModuleGUI() {
     if (ImGui::Button("Import Module", moduleImportButtonSize)) {
         loadModuleWithDialog();
     }
+    drawModuleOrderGUI();
 }
 
 void loadModuleWithDialog() {

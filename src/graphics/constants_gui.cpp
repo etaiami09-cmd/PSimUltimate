@@ -16,8 +16,7 @@ void drawConstantGUI(const std::string& name, Constant& constant) {
     ImGui::SameLine();
     if (ImGui::Button(std::format("Set##{}", name).c_str(),
         ImVec2{PSimImpl::constantButtonSize.x, ImGui::GetFrameHeight()})) {
-        constant.value = constant.buffer;
-        constant.onChange(constant.value);
+        constant.set();
     }
     ImGui::SameLine();
     ImGui::SetCursorPosX(
@@ -32,7 +31,7 @@ void drawConstantGUI(const std::string& name, Constant& constant) {
 void drawConstantsGUI() {
     ImGui::SeparatorText("Edit Constants");
     ImGui::Spacing();
-    for (auto& pair : getAllConstants()) {
-        drawConstantGUI(pair.first, pair.second);
+    for (auto& [name, constant] : getAllConstants()) {
+        drawConstantGUI(name, constant);
     }
 }

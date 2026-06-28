@@ -2,7 +2,6 @@
 
 #include "graphical-impl.hpp"
 #include "imgui.h"
-#include "graphical.hpp"
 #include "version.hpp"
 #include "open_shell_url.hpp"
 

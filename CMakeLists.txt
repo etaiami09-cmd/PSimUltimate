@@ -54,7 +54,7 @@ target_include_directories(PSimTestableLib PUBLIC
     extern/portable-file-dialogs
     ${CMAKE_CURRENT_BINARY_DIR}
 )
-target_link_libraries(PSimTestableLib PUBLIC raylib)
+target_link_libraries(PSimTestableLib PUBLIC raylib stdc++exp)
 target_compile_definitions(PSimTestableLib PRIVATE NO_FONT_AWESOME)
 
 add_executable(PSimUlt src/core/main.cpp)

@@ -15,6 +15,8 @@ constexpr ImVec2 constantsMenuSize(GUIWidth - PSimImpl::imGuiDefaultCellPadding.
 constexpr ImVec2 constantInputSize(100, 30);
 constexpr ImVec2 constantButtonSize(100, 20);
 constexpr ImVec4 appVersionColorRGBA(0.6f, 0.6f, 0.6f, 1.0f);
+constexpr ImVec4 selectableColorRGBA(0.26f, 0.59f, 0.98f, 0.40f);
+constexpr ImVec2 moduleListElementSize{100, 30};
 constexpr int modeToggleHeaderPadding = 10;
 constexpr const char* repoURL = "https://github.com/etaiami09-cmd/PSimUltimate";
 constexpr const char* repoIssuesURL = "https://github.com/etaiami09-cmd/PSimUltimate/issues/new";

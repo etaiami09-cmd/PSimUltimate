@@ -27,6 +27,11 @@ using StyleVarHolder = Holder<
     ImGui::PushStyleVar(idx, val);
 }, [](){ImGui::PopStyleVar();}>;
 
+using StyleColorHolder = Holder<
+    [](ImGuiCol idx, const ImVec4& col) {
+        ImGui::PushStyleColor(idx, col);
+}, [](){ImGui::PopStyleColor();}>;
+
 using GroupHolder = Holder<ImGui::BeginGroup, ImGui::EndGroup>;
 
 #endif
