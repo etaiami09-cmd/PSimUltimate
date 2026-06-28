@@ -1,6 +1,8 @@
 #ifndef PSIM_PARTICLE_HPP
 #define PSIM_PARTICLE_HPP
 
+#include <limits>
+
 #include "Vec2.hpp"
 #include "inlines/Vec2-impl.hpp"
 
@@ -49,6 +51,11 @@ public:
     void setRadius(float newRadius) noexcept;
     void setMass(float newMass) noexcept;
     void tick(float dt);
+    constexpr static float minMass = 0;
+    constexpr static float minRadius = 0;
+    constexpr static float maxMass = std::numeric_limits<float>::max();
+    constexpr static float maxRadius = std::numeric_limits<float>::max();
+
 };
 
 #include "Particle-impl.hpp" // IWYU pragma: export

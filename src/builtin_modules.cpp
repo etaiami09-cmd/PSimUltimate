@@ -1,6 +1,5 @@
 #include <span>
 #include <string>
-#include <cstddef>
 #include <limits>
 #include <algorithm>
 #include <cmath>
@@ -14,20 +13,19 @@
 #include "psim_module_api.hpp"
 
 namespace {
-
 constexpr float maxForce = 10;
 constexpr float distancePadding = 0.000001;
 
 struct ElectricParticle {
-    const Particle& particle;
+    const Particle &particle;
     const float charge;
 };
 
-Force coulombForce(const ElectricParticle& a, const ElectricParticle& b, float coulombs) noexcept {
+Force coulombForce(const ElectricParticle &a, const ElectricParticle &b, float coulombs) noexcept {
     auto deltas = a.particle.getPosition() - b.particle.getPosition();
     auto distanceSquared = deltas.magnitude_squared();
     auto force = (coulombs * a.charge * b.charge) / (distanceSquared + distancePadding);
-    force = std::clamp(force, - maxForce * maxForce, maxForce * maxForce);
+    force = std::clamp(force, -maxForce * maxForce, maxForce * maxForce);
     auto distance = std::sqrt(distanceSquared + distancePadding);
     auto factor = force / distance;
     return Force{deltas * factor};
@@ -36,7 +34,7 @@ Force coulombForce(const ElectricParticle& a, const ElectricParticle& b, float c
 void tickElectric(std::span<Particle> particles, std::span<Force> forces) {
     const auto charges = getAttributeByName("Charge").values;
     auto coulombsOptional = getConstantValue("Coulomb's");
-    if (!coulombsOptional.has_value()) {return;}
+    if (!coulombsOptional.has_value()) { return; }
     float coulombsValue = coulombsOptional.value();
     for (size_t i = 0; i < particles.size(); i++) {
         for (size_t j = i + 1; j < particles.size(); j++) {
@@ -60,7 +58,7 @@ void drawElectricParticles(std::span<const Particle> particles) {
         }
         DrawCircle(
             static_cast<int>(particles[i].getPosition().x
-                                + static_cast<float>(getPSimGUIWidth())),
+                             + static_cast<float>(getPSimGUIWidth())),
             static_cast<int>(particles[i].getPosition().y),
             particles[i].getRadius(), color
         );
@@ -77,20 +75,19 @@ void tickGravity(std::span<Particle> particles, std::span<Force> forces) {
         forces[i] += Force{0, gravity * particles[i].getMass()};
     }
 }
-
 } // namespace
 
 void initElectrostaticModule() noexcept {
     std::string module{"Electric"};
     registerModule(module);
     registerConstant(module, "Coulomb's", defaultK,
-        0, std::numeric_limits<float>::max(),
-        [](float newK) {
-        coulombs = newK;
-    });
+                     0, std::numeric_limits<float>::max(),
+                     [](float newK) {
+                         coulombs = newK;
+                     });
     registerParticleAttribute(module, "Charge", 0,
-        std::numeric_limits<float>::min(),
-        std::numeric_limits<float>::max());
+                              std::numeric_limits<float>::min(),
+                              std::numeric_limits<float>::max());
     registerForce(module, tickElectric);
     registerRenderer(module, drawElectricParticles);
 }
@@ -99,9 +96,9 @@ void initGravityModule() noexcept {
     std::string module{"Gravity"};
     registerModule(module);
     registerConstant(module, "Gravity", defaultGravity,
-        0, std::numeric_limits<float>::max(),
-    [](float newGravity) {
-        gravity = newGravity;
-    });
+                     0, std::numeric_limits<float>::max(),
+                     [](float newGravity) {
+                         gravity = newGravity;
+                     });
     registerForce(module, tickGravity);
 }

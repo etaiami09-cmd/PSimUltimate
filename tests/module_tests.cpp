@@ -39,7 +39,7 @@ TEST_CASE("Inactive modules are skipped", "[modules]") {
 
         getModules()[0].active = false;
 
-        Particles::add(Position{0.0f, 0.0f}, Velocity{0.0f, 0.0f}, 10.0f, 1.0f);
+        Particles::add(Position{0.0f, 0.0f}, Velocity{0.0f, 0.0f}, 10.0f, 1.0f, {});
 
         Particles::tick(1.0f);
 
@@ -72,10 +72,8 @@ TEST_CASE("Attributes work", "[modules]") {
         registerParticleAttribute("test", "test_att", 0, -1, 1);
         registerParticleAttribute("test", "test_att1", 0, -1, 1);
         Particles::reset();
-        Particles::add({0, 0}, {0, 0}, 10, 1);
-        Particles::add({0, 0}, {0, 0}, 10, 1);
-        setParticleAttributes(0, {1, -1});
-        setParticleAttributes(1, {0.4, 0.4});
+        Particles::add({0, 0}, {0, 0}, 10, 1, {1, -1});
+        Particles::add({0, 0}, {0, 0}, 10, 1, {0.4, 0.4});
         const auto& attvalues = getAttributeByName("test_att").values;
         REQUIRE(attvalues[0] == 1);
         REQUIRE(attvalues[1] == 0.4f);

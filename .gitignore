@@ -2,6 +2,7 @@ _deps/*
 .cache/*
 .claude/*
 CMakeFiles/*
+cmake-build-debug/*
 build/*
 build_opt/*
 example_module/*

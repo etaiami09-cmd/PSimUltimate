@@ -1,6 +1,5 @@
 #include <vector>
 #include <span>
-#include <cstddef>
 
 #include "attributes.hpp"
 #include "physics_callbacks.hpp"
@@ -21,10 +20,10 @@ std::span<const Force> Particles::getForces() noexcept {
     return std::span{forces};
 }
 
-void Particles::add(Position pos, Velocity vel, float radius, float mass) {
+void Particles::add(Position pos, Velocity vel, float radius, float mass, const std::vector<float>& attributes) {
     particles.emplace_back(pos, vel, radius, mass);
     forces.emplace_back();
-    pushDefaultParticleAttributes();
+    addNewParticleAttributes(attributes);
 }
 
 void Particles::set(size_t index, Position pos, Velocity vel, float radius, float mass) noexcept {

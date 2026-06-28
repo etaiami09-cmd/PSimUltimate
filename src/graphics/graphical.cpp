@@ -33,7 +33,7 @@ void startWindow() {
     rlImGuiSetup(true);
     ImGui::PushFont(ImGui::GetIO().Fonts->AddFontDefault());
     ImGuiStyle& style = ImGui::GetStyle();
-    ImVec4 headerColor = style.Colors[ImGuiCol_TitleBgActive];
+    const ImVec4& headerColor = style.Colors[ImGuiCol_TitleBgActive];
     style.Colors[ImGuiCol_TitleBg] = headerColor;
     style.Colors[ImGuiCol_TitleBgCollapsed] = headerColor;
 }
