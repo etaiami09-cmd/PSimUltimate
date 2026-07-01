@@ -14,7 +14,8 @@
 namespace {
 PSIM_Module_Function_Table functionTable{regModule,
     regConstant, regAttribute, regForce,
-    regVelocity, regPosition, regRenderer};
+    regVelocity, regPosition, regRenderer,
+    accConstant, accAttribute};
 } // namespace
 
 void loadBuiltinModuleTable() noexcept {

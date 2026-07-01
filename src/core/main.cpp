@@ -1,3 +1,5 @@
+#define PSIM_MAIN_CPP
+
 #include "raylib.h"
 #include "graphical.hpp"
 #include "simulation.hpp"

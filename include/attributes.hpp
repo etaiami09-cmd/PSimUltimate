@@ -5,6 +5,7 @@
 #include <span>
 #include <vector>
 #include <cstddef>
+#include <optional>
 
 struct Attribute {
     std::string name;
@@ -17,7 +18,7 @@ struct Attribute {
 void addAttribute(const std::string& name, float defaultValue,
     float minValue, float maxValue) noexcept;
 std::span<const Attribute> getAttributes() noexcept;
-const Attribute& getAttributeByName(const std::string& name);
+const std::optional<Attribute&> getAttributeByName(const std::string& name);
 void addNewParticleAttributes(const std::vector<float>& values) noexcept;
 void setParticleAttributes(size_t index, const std::vector<float>& values) noexcept;
 void clearAttributeValues() noexcept;

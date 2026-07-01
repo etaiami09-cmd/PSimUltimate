@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.30)
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(ParticleSimulatorUltimate VERSION 0.1.4 LANGUAGES CXX)
+project(ParticleSimulatorUltimate VERSION 0.1.5 LANGUAGES CXX)
 
 enable_testing()
 
@@ -17,7 +17,9 @@ FetchContent_Declare(
     GIT_SHALLOW    TRUE
 )
 
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Forced shared library build" FORCE)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable(raylib)
 
 configure_file(
@@ -44,6 +46,8 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "extern/imgui/*.cpp"
     "extern/rlImGui/*.cpp")
 list(REMOVE_ITEM ENGINE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "example_module/.*")
+
 add_library(PSimTestableLib STATIC ${ENGINE_SOURCES})
 target_include_directories(PSimTestableLib PUBLIC 
     include
@@ -62,7 +66,10 @@ target_link_libraries(PSimUlt PRIVATE PSimTestableLib)
 
 set_target_properties(PSimUlt PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
 
-target_link_options(PSimUlt PRIVATE $<$<CONFIG:Release>:-Xlinker /entry:mainCRTStartup>)
+target_compile_definitions(PSimTestableLib PUBLIC PSIM_STATIC_BUILD)
+
+target_link_options(PSimUlt PRIVATE
+        $<$<PLATFORM_ID:Windows>:-mwindows$<COMMA>-Wl,--entry=mainCRTStartup>)
 
 target_include_directories(PSimUlt PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 

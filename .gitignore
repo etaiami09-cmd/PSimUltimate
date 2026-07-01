@@ -5,7 +5,6 @@ CMakeFiles/*
 cmake-build-debug/*
 build/*
 build_opt/*
-example_module/*
 imgui.ini
 CMakeCache.txt
 .clangd

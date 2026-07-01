@@ -122,3 +122,29 @@ extern "C" void PSIM_CALL regRenderer(const char* module, size_t moduleLen, PSIM
         }
     );
 }
+
+extern "C" void PSIM_CALL accConstant(const char* name, size_t nameLen, bool* hasValue, float* retAddress) {
+    std::string constantName{name, nameLen};
+    auto result = getConstantValue(constantName);
+    if (result.has_value()) {
+        *retAddress = result.value();
+        *hasValue = true;
+    }
+    else {
+        *hasValue = false;
+    }
+}
+
+void PSIM_CALL accAttribute(const char* name, size_t nameLen, bool* hasValue, float** buffAddress, size_t* countAddress) {
+    std::string attributeName{name, nameLen};
+    auto result = getAttributeByName(attributeName);
+    if (result.has_value()) {
+        auto attribute = result.value();
+        *buffAddress = attribute.values.data();
+        *countAddress = attribute.values.size();
+        *hasValue = true;
+    }
+    else {
+        *hasValue = false;
+    }
+}

@@ -25,7 +25,7 @@ std::span<const Attribute> getAttributes() noexcept {
     return attributes;
 }
 
-const Attribute& getAttributeByName(const std::string& name) {
+const std::optional<Attribute&> getAttributeByName(const std::string& name) {
     return *std::ranges::find_if(attributes,
         [&name](const auto& otherName) {return name == otherName;},
         &Attribute::name

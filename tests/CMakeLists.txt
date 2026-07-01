@@ -4,11 +4,15 @@ set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
 FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
     GIT_TAG v3.5.2
 )
+
 FetchContent_MakeAvailable(Catch2)
 
 file(GLOB_RECURSE TEST_SOURCES "*.cpp")

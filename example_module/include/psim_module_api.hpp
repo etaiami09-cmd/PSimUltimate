@@ -39,7 +39,7 @@ static_assert(sizeof(Force) == forceSize);
 
 // Register a new module
 inline void registerModule(const std::string& name);
-// Register a new constant
+// Register a new constant 
 inline void registerConstant(const std::string& module, const std::string& name, float defaultValue,
     float minValue, float maxValue, const std::function<void(float)>& onChange);
 // Register a new particle attribute

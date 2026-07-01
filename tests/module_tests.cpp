@@ -74,21 +74,21 @@ TEST_CASE("Attributes work", "[modules]") {
         Particles::reset();
         Particles::add({0, 0}, {0, 0}, 10, 1, {1, -1});
         Particles::add({0, 0}, {0, 0}, 10, 1, {0.4, 0.4});
-        const auto& attvalues = getAttributeByName("test_att").values;
+        const auto& attvalues = getAttributeByName("test_att").value().values;
         REQUIRE(attvalues[0] == 1);
         REQUIRE(attvalues[1] == 0.4f);
-        const auto& att1values = getAttributeByName("test_att1").values;
+        const auto& att1values = getAttributeByName("test_att1").value().values;
         REQUIRE(att1values[0] == -1);
         REQUIRE(att1values[1] == 0.4f);
         REQUIRE(getAttributes().size() == 2);
         REQUIRE(attvalues.size() == 2);
         REQUIRE(att1values.size() == 2);
-        REQUIRE(getAttributeByName("test_att").defaultValue == 0);
-        REQUIRE(getAttributeByName("test_att").minValue == -1);
-        REQUIRE(getAttributeByName("test_att").maxValue == 1);
-        REQUIRE(getAttributeByName("test_att1").defaultValue == 0);
-        REQUIRE(getAttributeByName("test_att1").minValue == -1);
-        REQUIRE(getAttributeByName("test_att1").maxValue == 1);
+        REQUIRE(getAttributeByName("test_att").value().defaultValue == 0);
+        REQUIRE(getAttributeByName("test_att").value().minValue == -1);
+        REQUIRE(getAttributeByName("test_att").value().maxValue == 1);
+        REQUIRE(getAttributeByName("test_att1").value().defaultValue == 0);
+        REQUIRE(getAttributeByName("test_att1").value().minValue == -1);
+        REQUIRE(getAttributeByName("test_att1").value().maxValue == 1);
     }
 }
 

@@ -32,8 +32,8 @@ Force coulombForce(const ElectricParticle &a, const ElectricParticle &b, float c
 }
 
 void tickElectric(std::span<Particle> particles, std::span<Force> forces) {
-    const auto charges = getAttributeByName("Charge").values;
-    auto coulombsOptional = getConstantValue("Coulomb's");
+    const auto charges = accessAttribute("Charge").value();
+    auto coulombsOptional = accessConstantValue("Coulomb's");
     if (!coulombsOptional.has_value()) { return; }
     float coulombsValue = coulombsOptional.value();
     for (size_t i = 0; i < particles.size(); i++) {
@@ -50,10 +50,10 @@ void tickElectric(std::span<Particle> particles, std::span<Force> forces) {
 }
 
 void drawElectricParticles(std::span<const Particle> particles) {
-    auto charges = getAttributeByName("Charge");
+    auto charges = accessAttribute("Charge").value();
     for (size_t i = 0; i < particles.size(); i++) {
         auto color = GRAY;
-        if (auto charge = charges.values[i]; charge != 0) {
+        if (auto charge = charges[i]; charge != 0) {
             color = (charge > 0) ? BLUE : RED;
         }
         DrawCircle(
