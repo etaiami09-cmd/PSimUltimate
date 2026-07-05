@@ -4,9 +4,26 @@
 #include "psim_module_api.hpp"
 
 #if defined(_WIN32)
+// 1. Temporarily rename Raylib's clashing types to a dummy name
+#define Rectangle Raylib_Rectangle_Internal
+#define CloseWindow Raylib_CloseWindow_Internal
+#define ShowCursor Raylib_ShowCursor_Internal
+#define DrawText Raylib_DrawText_Internal
+
+// 2. Include Windows safely
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <libloaderapi.h>
+#undef Rectangle
+#undef CloseWindow
+#undef ShowCursor
+#undef DrawText
+#undef Rectangle
+#undef CloseWindow
+#undef ShowCursor
+#undef DrawText
+#undef min
+#undef max
 #else
 #include <dlfcn.h>
 #endif
@@ -15,7 +32,8 @@ namespace {
 PSIM_Module_Function_Table functionTable{regModule,
     regConstant, regAttribute, regForce,
     regVelocity, regPosition, regRenderer,
-    accConstant, accAttribute};
+    accConstant, accAttribute,
+    regKeybind, regTopMenuButton};
 } // namespace
 
 void loadBuiltinModuleTable() noexcept {

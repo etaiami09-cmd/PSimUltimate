@@ -52,3 +52,14 @@ void repositionModule(size_t from, size_t to) noexcept {
             moduleIndexOrder, fromIt);
     }
 }
+
+bool isModuleActive(const std::string &name) noexcept {
+    auto search = std::ranges::find_if(modules, [&](auto &module) {
+        return module.name == name;
+    });
+    if (search == modules.end()) {
+        return false;
+    }
+    auto& module = *search;
+    return module.active;
+}

@@ -31,5 +31,6 @@ void addModule(const std::string& name) noexcept;
 std::span<Module> getModules();
 const std::list<size_t>& getModuleIndexOrders();
 void repositionModule(size_t from, size_t to) noexcept;
+bool isModuleActive(const std::string& name) noexcept;
 
 #endif

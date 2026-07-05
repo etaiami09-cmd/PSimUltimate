@@ -7,7 +7,14 @@
 
 #include "menu_bar.hpp"
 
+#include <format>
+#include <map>
+#include <set>
+
 namespace {
+
+std::map<std::string, std::map<std::string, std::function<void()>>> moduleButtons;
+
 void drawFileMenu() {
     if (ImGui::BeginMenu("File")) {        
         ImGui::SeparatorText("Simulation Files");
@@ -39,12 +46,30 @@ void drawEditMenu() {
         ImGui::EndMenu();
     }
 }
+void drawModuleButtons() {
+    if (ImGui::BeginMenu("Modules")) {
+        for (const auto& [module, buttons] : moduleButtons) {
+            ImGui::SeparatorText(module.c_str());
+            for (const auto& [buttonName, callback] : buttons) {
+                if (ImGui::MenuItem(std::format("{}##_button_{}", buttonName, module).c_str())) {
+                    callback();
+                }
+            }
+        }
+        ImGui::EndMenu();
+    }
+}
 } // namespace
 
 void drawMenuBar() {
     if (ImGui::BeginMainMenuBar()) {
         drawFileMenu();
         drawEditMenu();
+        drawModuleButtons();
         ImGui::EndMainMenuBar();
     }
+}
+
+void addModuleTopMenuButton(const std::string &module, const std::string &name, std::function<void()> callback) {
+    moduleButtons[module][name] = callback;
 }

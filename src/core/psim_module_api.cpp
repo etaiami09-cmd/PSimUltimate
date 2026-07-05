@@ -16,7 +16,18 @@
 
 #include "psim_module_api.hpp"
 
+#include "controls.hpp"
+#include "menu_bar.hpp"
+
 namespace {
+
+std::function<void()>
+    restructureFunction(PSIM_Void_Callback function) {
+    auto handle = std::shared_ptr<void>(function.capture, function.destroy);
+    return [function, handle = std::move(handle)]() {
+        function.invoke(function.capture);
+    };
+}
 
 std::function<void(std::span<Particle>, std::span<Force>)>
     restructureFunction(PSIM_Force_Callback function)
@@ -135,7 +146,7 @@ extern "C" void PSIM_CALL accConstant(const char* name, size_t nameLen, bool* ha
     }
 }
 
-void PSIM_CALL accAttribute(const char* name, size_t nameLen, bool* hasValue, float** buffAddress, size_t* countAddress) {
+extern "C" void PSIM_CALL accAttribute(const char* name, size_t nameLen, bool* hasValue, float** buffAddress, size_t* countAddress) {
     std::string attributeName{name, nameLen};
     auto result = getAttributeByName(attributeName);
     if (result.has_value()) {
@@ -147,4 +158,21 @@ void PSIM_CALL accAttribute(const char* name, size_t nameLen, bool* hasValue, fl
     else {
         *hasValue = false;
     }
+}
+
+extern "C" void PSIM_CALL regKeybind(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+    const KeyboardKey* keys, size_t keysLen, const MouseButton* buttons, size_t buttonsLen,
+    PSIM_Void_Callback callback) {
+    std::string moduleName{module, moduleLen};
+    std::string keybindName{name, nameLen};
+    std::span<const KeyboardKey> keybindKeys{keys, keysLen};
+    std::span<const MouseButton> keybindButtons{buttons, buttonsLen};
+    addKeybind(moduleName, keybindName, keybindKeys, keybindButtons, restructureFunction(callback));
+}
+
+extern "C" void PSIM_CALL regTopMenuButton(const char* module, size_t moduleLen, const char* name,
+    size_t nameLen, PSIM_Void_Callback callback) {
+    std::string buttonName{name, nameLen};
+    std::string moduleName{module, moduleLen};
+    addModuleTopMenuButton(moduleName, buttonName, restructureFunction(callback));
 }

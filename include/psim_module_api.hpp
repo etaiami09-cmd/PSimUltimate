@@ -29,6 +29,8 @@
 
 #include "Particle.hpp"
 
+#include "raylib.h"
+
 constexpr size_t particleSize = 6 * sizeof(float);
 constexpr size_t forceSize = 2 * sizeof(float);
 
@@ -68,6 +70,12 @@ struct PSIM_Callback {
     void* capture;
 };
 
+struct PSIM_Void_Callback {
+    void (PSIM_CALL *invoke)(void* capture);
+    void (PSIM_CALL *destroy)(void* capture);
+    void* capture;
+};
+
 struct PSIM_Graphics_Callback {
     void (PSIM_CALL *invoke)(void* capture, const Particle* particles, size_t count);
     void (PSIM_CALL *destroy)(void* capture);
@@ -97,6 +105,11 @@ void PSIM_CALL regPosition(const char* module, size_t moduleLen, PSIM_Callback p
 void PSIM_CALL regRenderer(const char* module, size_t moduleLen, PSIM_Graphics_Callback renderer);
 void PSIM_CALL accConstant(const char* name, size_t nameLen, bool* hasValue, float* retAddress);
 void PSIM_CALL accAttribute(const char* name, size_t nameLen, bool* hasValue, float** buffAddress, size_t* countAddress);
+void PSIM_CALL regKeybind(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+    const KeyboardKey* keys, size_t keysLen, const MouseButton* buttons, size_t buttonsLen,
+    PSIM_Void_Callback callback);
+void PSIM_CALL regTopMenuButton(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+    PSIM_Void_Callback callback);
 
 struct PSIM_Module_Function_Table {
     decltype(regModule)* _regModule;
@@ -108,6 +121,8 @@ struct PSIM_Module_Function_Table {
     decltype(regRenderer)* _regRenderer;
     decltype(accConstant)* _accConstant;
     decltype(accAttribute)* _accAttribute;
+    decltype(regKeybind)* _regKeybind;
+    decltype(regTopMenuButton)* _regTopMenuButton;
 };
 
 inline const PSIM_Module_Function_Table* PSIM_Api_Table;
@@ -125,6 +140,22 @@ inline PSIM_MODULE_EXPORT void PSIM_CALL PSIM_Initialize_Module(
 
 inline void loadModuleSystem(const PSIM_Module_Function_Table* functionTable) {
     PSIM_Api_Table = functionTable;
+}
+
+inline PSIM_Void_Callback destructureFunction(std::function<void()> function) {
+    using Fn = decltype(function);
+    auto* held = new Fn(std::move(function));
+    auto invoke = [](void* capture) noexcept {
+        auto* f = static_cast<Fn*>(capture);
+        try {
+            (*f)();
+        }
+        catch (...) {}
+    };
+    auto destroy = [](void* capture) noexcept {
+        delete static_cast<Fn*>(capture);
+    };
+    return PSIM_Void_Callback{invoke, destroy, held};
 }
 
 inline PSIM_Force_Callback destructureFunction(std::function<void(std::span<Particle>, std::span<Force>)> function) {
@@ -251,6 +282,20 @@ inline std::optional<std::span<float>> accessAttribute(const std::string& name) 
         return {};
     }
     return std::span<float>(values, count);
+}
+
+inline void registerKeybind(const std::string& module, const std::string& name,
+    std::span<KeyboardKey> keys, std::span<MouseButton> buttons,
+    const std::function<void()>& callback) {
+    PSIM_Api_Table->_regKeybind(module.c_str(), module.size(), name.c_str(), name.size(),
+        keys.data(), keys.size(), buttons.data(), buttons.size(),
+        destructureFunction(callback));
+}
+
+inline void registerTopMenuButton(const std::string& module, const std::string& name,
+    const std::function<void()>& callback) {
+    PSIM_Api_Table->_regTopMenuButton(module.c_str(), module.size(), name.c_str(), name.size(),
+        destructureFunction(callback));
 }
 
 #endif
