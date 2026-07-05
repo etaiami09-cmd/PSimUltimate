@@ -64,6 +64,12 @@ target_compile_definitions(PSimTestableLib PRIVATE NO_FONT_AWESOME)
 add_executable(PSimUlt src/core/main.cpp)
 target_link_libraries(PSimUlt PRIVATE PSimTestableLib)
 
+target_link_options(PSimUlt PRIVATE
+        -static
+        -static-libgcc
+        -static-libstdc++
+)
+
 set_target_properties(PSimUlt PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
 
 target_compile_definitions(PSimTestableLib PUBLIC PSIM_STATIC_BUILD)

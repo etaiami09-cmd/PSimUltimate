@@ -14,10 +14,12 @@ void drawConstantGUI(const std::string& name, Constant& constant) {
         constant.buffer = std::clamp(constant.buffer, constant.minValue, constant.maxValue);
     }
     ImGui::SameLine();
+    ImGui::BeginDisabled(constant.buffer == constant.value);
     if (ImGui::Button(std::format("Set##{}", name).c_str(),
         ImVec2{PSimImpl::constantButtonSize.x, ImGui::GetFrameHeight()})) {
         constant.set();
     }
+    ImGui::EndDisabled();
     ImGui::SameLine();
     ImGui::SetCursorPosX(
         ImGui::GetCursorPosX()
