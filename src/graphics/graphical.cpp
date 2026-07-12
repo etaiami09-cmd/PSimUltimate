@@ -19,6 +19,7 @@
 #include "particle_creation_gui.hpp"
 #include "constants_gui.hpp"
 #include "about_window.hpp"
+#include "pop_up_alerts.hpp"
 
 namespace {
 constexpr const char *windowTitle = "Particle Simulator Ultimate";
@@ -91,6 +92,7 @@ void drawGUI() {
     drawModuleGUI();
     drawAboutWindow();
     ImGui::End();
+    displayPopups();
     rlImGuiEnd();
 }
 

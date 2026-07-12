@@ -110,6 +110,7 @@ void PSIM_CALL regKeybind(const char* module, size_t moduleLen, const char* name
     PSIM_Void_Callback callback);
 void PSIM_CALL regTopMenuButton(const char* module, size_t moduleLen, const char* name, size_t nameLen,
     PSIM_Void_Callback callback);
+void PSIM_CALL regAlert(const char* module, size_t moduleLen, const char* text, size_t textLen);
 
 struct PSIM_Module_Function_Table {
     decltype(regModule)* _regModule;
@@ -123,6 +124,7 @@ struct PSIM_Module_Function_Table {
     decltype(accAttribute)* _accAttribute;
     decltype(regKeybind)* _regKeybind;
     decltype(regTopMenuButton)* _regTopMenuButton;
+    decltype(regAlert)* _regAlert;
 };
 
 inline const PSIM_Module_Function_Table* PSIM_Api_Table;
@@ -296,6 +298,11 @@ inline void registerTopMenuButton(const std::string& module, const std::string& 
     const std::function<void()>& callback) {
     PSIM_Api_Table->_regTopMenuButton(module.c_str(), module.size(), name.c_str(), name.size(),
         destructureFunction(callback));
+}
+
+inline void alertUser(const std::string& module, const std::string& text) {
+    PSIM_Api_Table->_regAlert(module.c_str(), module.size(),
+        text.c_str(), text.size());
 }
 
 #endif

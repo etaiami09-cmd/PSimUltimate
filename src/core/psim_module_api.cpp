@@ -18,6 +18,7 @@
 
 #include "controls.hpp"
 #include "menu_bar.hpp"
+#include "pop_up_alerts.hpp"
 
 namespace {
 
@@ -175,4 +176,10 @@ extern "C" void PSIM_CALL regTopMenuButton(const char* module, size_t moduleLen,
     std::string buttonName{name, nameLen};
     std::string moduleName{module, moduleLen};
     addModuleTopMenuButton(moduleName, buttonName, restructureFunction(callback));
+}
+
+void regAlert(const char *module, size_t moduleLen, const char *text, size_t textLen) {
+    std::ignore = module;
+    std::ignore = moduleLen;
+    pushPopUpAlert(std::string{text, textLen});
 }

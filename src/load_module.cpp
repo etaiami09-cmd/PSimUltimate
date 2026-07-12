@@ -1,6 +1,8 @@
 #include <string>
 
 #include "load_module.hpp"
+
+#include "pop_up_alerts.hpp"
 #include "psim_module_api.hpp"
 
 #if defined(_WIN32)
@@ -33,7 +35,7 @@ PSIM_Module_Function_Table functionTable{regModule,
     regConstant, regAttribute, regForce,
     regVelocity, regPosition, regRenderer,
     accConstant, accAttribute,
-    regKeybind, regTopMenuButton};
+    regKeybind, regTopMenuButton, regAlert};
 } // namespace
 
 void loadBuiltinModuleTable() noexcept {
@@ -46,6 +48,10 @@ void loadModule(const std::string& dllName) {
     auto* module = LoadLibraryA(dllName.c_str());
     auto entry = GetProcAddress(module, "PSIM_Initialize_Module");
     auto callable = reinterpret_cast<void(PSIM_CALL*)(const PSIM_Module_Function_Table*)>(entry);
+    if (callable == nullptr) {
+        pushPopUpAlert("Error: Could not find module entry point.");
+        return;
+    }
     callable(&functionTable);
 #else
     auto* handle = dlopen(dllName, RTLD_NOW | RTLD_LOCAL);
@@ -53,6 +59,10 @@ void loadModule(const std::string& dllName) {
     auto entry = reinterpret_cast<void(*)(const PSIM_Module_Function_Table*)>(
         dlsym(module, "PSIM_Initialize_Module")
     );
+    if (entry == nullptr) {
+        pushPopUpAlert("Error: Could not find module entry point.");
+        return;
+    }
     entry(&functionTable);
 #endif
 }
