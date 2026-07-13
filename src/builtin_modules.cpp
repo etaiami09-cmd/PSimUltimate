@@ -9,6 +9,9 @@
 #include "raylib.h"
 #include "Particle.hpp"
 #include "builtin_modules.hpp"
+
+#include <format>
+
 #include "psim_module_api.hpp"
 
 namespace {
@@ -19,6 +22,8 @@ struct ElectricParticle {
     const Particle &particle;
     const float charge;
 };
+
+bool shouldDrawElectric = true;
 
 Force coulombForce(const ElectricParticle &a, const ElectricParticle &b, float coulombs) noexcept {
     auto deltas = a.particle.getPosition() - b.particle.getPosition();
@@ -49,6 +54,7 @@ void tickElectric(std::span<Particle> particles, std::span<Force> forces) {
 }
 
 void drawElectricParticles(std::span<const Particle> particles) {
+    if (!shouldDrawElectric) {return;}
     auto charges = accessAttribute("Charge").value();
     for (size_t i = 0; i < particles.size(); i++) {
         auto color = GRAY;
@@ -79,6 +85,15 @@ void tickGravity(std::span<Particle> particles, std::span<Force> forces) {
 void initElectrostaticModule() noexcept {
     std::string module{"Electric"};
     registerModule(module);
+    auto drawOptional = readConfig<bool>(module, "ShouldDraw");
+    if (drawOptional.has_value()) {
+        shouldDrawElectric = drawOptional.value();
+    }
+    registerSwitch(module, "Color Particles By Charge", shouldDrawElectric,
+        [=](bool newValue) {
+            shouldDrawElectric = newValue;
+            writeConfig<bool>(module, "ShouldDraw", shouldDrawElectric);
+        });
     registerConstant(module, "Coulomb's", defaultK,
                      0, std::numeric_limits<float>::max(),
                      [](float newK) {

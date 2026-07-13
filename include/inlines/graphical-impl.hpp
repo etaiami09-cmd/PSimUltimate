@@ -3,6 +3,7 @@
 
 #include "graphical.hpp"
 #include "imgui.h"
+#include <string>
 
 namespace PSimImpl {
 constexpr int GUIWidth = 300;
@@ -20,6 +21,12 @@ constexpr ImVec2 moduleListElementSize{100, 30};
 constexpr int modeToggleHeaderPadding = 10;
 constexpr const char* repoURL = "https://github.com/etaiami09-cmd/PSimUltimate";
 constexpr const char* repoIssuesURL = "https://github.com/etaiami09-cmd/PSimUltimate/issues/new";
+constexpr std::string settingsPageImGuiID{"Settings"};
+constexpr ImVec2 settingsPageSize{800, 400};
+constexpr ImVec2 settingsPageMenuSize{200, 0};
+constexpr ImVec2 settingsPageContentSize{0, 0};
+constexpr ImVec2 sliderSize{300, constantButtonSize.y};
+constexpr ImVec2 moduleSwitchPadding{10, 10};
 } // namespace PSimImpl
 
 #endif

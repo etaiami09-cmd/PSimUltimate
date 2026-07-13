@@ -94,9 +94,15 @@ struct PSIM_Constant_Change_Callback {
     void* capture;
 };
 
+struct PSIM_Boolean_Change_Callback {
+    void (PSIM_CALL *invoke)(void* capture, bool newValue);
+    void (PSIM_CALL *destroy)(void* capture);
+    void* capture;
+};
+
 void PSIM_CALL regModule(const char* module, size_t moduleLen);
 void PSIM_CALL regConstant(const char* module, size_t moduleLen, const char* name, size_t nameLen, float defaultValue,
-    float minValue, float maxValue, PSIM_Constant_Change_Callback);
+    float minValue, float maxValue, PSIM_Constant_Change_Callback onChange);
 void PSIM_CALL regAttribute(const char* module, size_t moduleLen, const char* name, size_t nameLen,
     float defaultValue, float minValue, float maxValue);
 void PSIM_CALL regForce(const char* module, size_t moduleLen, PSIM_Force_Callback forceHandler);
@@ -111,6 +117,12 @@ void PSIM_CALL regKeybind(const char* module, size_t moduleLen, const char* name
 void PSIM_CALL regTopMenuButton(const char* module, size_t moduleLen, const char* name, size_t nameLen,
     PSIM_Void_Callback callback);
 void PSIM_CALL regAlert(const char* module, size_t moduleLen, const char* text, size_t textLen);
+void PSIM_CALL wrConfig(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+    const void* data, size_t dataLen);
+bool PSIM_CALL rdConfig(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+    void* data, size_t dataLen);
+void PSIM_CALL regSwitch(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+    bool defaultValue, PSIM_Boolean_Change_Callback onChange);
 
 struct PSIM_Module_Function_Table {
     decltype(regModule)* _regModule;
@@ -125,6 +137,9 @@ struct PSIM_Module_Function_Table {
     decltype(regKeybind)* _regKeybind;
     decltype(regTopMenuButton)* _regTopMenuButton;
     decltype(regAlert)* _regAlert;
+    decltype(wrConfig)* _wrConfig;
+    decltype(rdConfig)* _rdConfig;
+    decltype(regSwitch)* _regSwitch;
 };
 
 inline const PSIM_Module_Function_Table* PSIM_Api_Table;
@@ -206,6 +221,22 @@ inline PSIM_Constant_Change_Callback destructureFunction(std::function<void(floa
         delete static_cast<Fn*>(capture);
     };
     return PSIM_Constant_Change_Callback{invoke, destroy, held};
+}
+
+inline PSIM_Boolean_Change_Callback destructureFunction(std::function<void(bool)> function) {
+    using Fn = decltype(function);
+    auto* held = new Fn(std::move(function));
+    auto invoke = [](void* capture, bool newValue) noexcept {
+        auto* f = static_cast<Fn*>(capture);
+        try {
+            (*f)(newValue);
+        }
+        catch (...) {}
+    };
+    auto destroy = [](void* capture) noexcept {
+        delete static_cast<Fn*>(capture);
+    };
+    return PSIM_Boolean_Change_Callback{invoke, destroy, held};
 }
 
 inline PSIM_Graphics_Callback destructureFunction(std::function<void(std::span<const Particle>)> function) {
@@ -303,6 +334,28 @@ inline void registerTopMenuButton(const std::string& module, const std::string& 
 inline void alertUser(const std::string& module, const std::string& text) {
     PSIM_Api_Table->_regAlert(module.c_str(), module.size(),
         text.c_str(), text.size());
+}
+
+template<typename T>
+void writeConfig(const std::string& module, const std::string& name, const T& value) {
+    PSIM_Api_Table->_wrConfig(module.c_str(), module.size(), name.c_str(), name.size(),
+        &value, sizeof(T));
+}
+
+template<typename T>
+std::optional<T> readConfig(const std::string& module, const std::string& name) {
+    T value;
+    if (!PSIM_Api_Table->_rdConfig(module.c_str(), module.size(), name.c_str(), name.size(),
+        &value, sizeof(T))) {
+        return {};
+    }
+    return value;
+}
+
+inline void registerSwitch(const std::string& module, const std::string& name,
+    bool defaultValue, const std::function<void(bool)>& onChange) {
+    PSIM_Api_Table->_regSwitch(module.c_str(), module.size(), name.c_str(), name.size(),
+        defaultValue, destructureFunction(onChange));
 }
 
 #endif

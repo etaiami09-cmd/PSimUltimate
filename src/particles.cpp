@@ -7,9 +7,13 @@
 #include "module.hpp"
 #include "particles.hpp"
 
+#include "configs.hpp"
+
 namespace {
 std::vector<Particle> particles;
 std::vector<Force> forces;
+int ticksPerFrame;
+constexpr int defaultTicksPerFrame = 1;
 } // namespace
 
 std::span<const Particle> Particles::get() noexcept {
@@ -91,12 +95,35 @@ void callPositionHandlers() {
 }
 } // namespace
 
-void Particles::tick(float dt) noexcept {
-    accumulateForces();
-    tickForces();
-    accumulateVelocity();
-    for (auto& part : particles) {
-        part.tick(dt);
+void Particles::tick() noexcept {
+    float tickCount = getTicksPerFrame();
+    float dt = (1.0f / (getFPS() * tickCount));
+    for (int i = 0; i < tickCount; i++) {
+        accumulateForces();
+        tickForces();
+        accumulateVelocity();
+        for (auto& part : particles) {
+            part.tick(dt);
+        }
+        callPositionHandlers();
     }
-    callPositionHandlers();
+}
+
+int getTicksPerFrame() {
+    return ticksPerFrame;
+}
+
+void setTicksPerFrame(int ticks) {
+    ticksPerFrame = ticks;
+    setConfigValue<int>("TicksPerFrame", ticksPerFrame);
+}
+
+void loadTicksPerFrameConfig() {
+    auto optionalValue = getConfigValue<int>("TicksPerFrame");
+    if (!optionalValue.has_value()) {
+        setConfigValue<int>("TicksPerFrame", defaultTicksPerFrame);
+        setTicksPerFrame(defaultTicksPerFrame);
+        return;
+    }
+    setTicksPerFrame(std::get<0>(optionalValue.value()));
 }

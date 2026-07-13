@@ -33,6 +33,25 @@ Keybind::Keybind(const std::string& module, const std::string& name,
 : keys(keys.begin(),keys.end()), buttons(buttons.begin(),
     buttons.end()), module(module), name(name), callback(callback) {}
 
+std::string Keybind::formatKeys() const noexcept {
+    std::string result{};
+    if (buttons.empty()) {
+        for (size_t i = 0; i < keys.size() - 1; i++) {
+            result += std::format("{}+", keys[i]);
+        }
+        result += std::format("{}", keys[keys.size() - 1]);
+        return result;
+    }
+    for (size_t i = 0; i < keys.size(); i++) {
+        result += std::format("{}+", keys[i]);
+    }
+    for (size_t i = 0; i < buttons.size() - 1; i++) {
+        result += std::format("{}+", buttons[i]);
+    }
+    result += std::format("{}", buttons[buttons.size() - 1]);
+    return result;
+}
+
 void handleControls() {
     for (const auto& keybind : keybinds) {
         if (isKeybindActivated(keybind))
@@ -55,4 +74,8 @@ void addKeybind(const std::string &module, const std::string& name,
     std::span<const KeyboardKey> keys, std::span<const MouseButton> buttons,
     const std::function<void()> &callback) noexcept {
     keybinds.emplace_back(module, name, keys, buttons, callback);
+}
+
+std::span<Keybind> getKeybinds() {
+    return keybinds;
 }

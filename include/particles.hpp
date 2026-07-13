@@ -4,9 +4,13 @@
 #include <span>
 #include <cstddef>
 #include <vector>
+
+#include "fps.hpp"
 #include "Particle.hpp"
 
-constexpr float defaultDt = 0.016f;
+int getTicksPerFrame();
+void setTicksPerFrame(int ticks);
+void loadTicksPerFrameConfig();
 
 namespace Particles {
     std::span<const Particle> get() noexcept;
@@ -15,7 +19,7 @@ namespace Particles {
     void set(size_t index, Position pos, Velocity vel, float radius, float mass) noexcept;
     void resize(size_t size) noexcept;
     void reset() noexcept;
-    void tick(float dt=defaultDt) noexcept;
+    void tick() noexcept;
 } // namespace Particles
 
 #endif

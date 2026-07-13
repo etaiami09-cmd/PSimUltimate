@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(ParticleSimulatorUltimate VERSION 0.1.5 LANGUAGES CXX)
 
@@ -60,6 +61,8 @@ target_include_directories(PSimTestableLib PUBLIC
 )
 target_link_libraries(PSimTestableLib PUBLIC raylib stdc++exp)
 target_compile_definitions(PSimTestableLib PRIVATE NO_FONT_AWESOME)
+target_compile_options(PSimTestableLib PRIVATE
+    --embed-dir=${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(PSimUlt src/core/main.cpp)
 target_link_libraries(PSimUlt PRIVATE PSimTestableLib)

@@ -4,7 +4,6 @@
 #include <functional>
 #include <span>
 #include <utility>
-#include <cstddef>
 #include <algorithm>
 
 #include "constants.hpp"
@@ -16,9 +15,11 @@
 
 #include "psim_module_api.hpp"
 
+#include "configs.hpp"
 #include "controls.hpp"
 #include "menu_bar.hpp"
 #include "pop_up_alerts.hpp"
+#include "settings_menu.hpp"
 
 namespace {
 
@@ -65,6 +66,16 @@ std::function<void(float)>
         function.invoke(function.capture, newValue);
     };
 }
+
+std::function<void(bool)>
+    restructureFunction(PSIM_Boolean_Change_Callback function)
+{
+    auto handle = std::shared_ptr<void>(function.capture, function.destroy);
+    return [function, handle = std::move(handle)](bool newValue) {
+        function.invoke(function.capture, newValue);
+    };
+}
+
 
 size_t getModuleIndexByName(const std::string& name) {
     return *std::ranges::find_if(std::ranges::views::iota(size_t{0}, getModules().size()),
@@ -172,14 +183,30 @@ extern "C" void PSIM_CALL regKeybind(const char* module, size_t moduleLen, const
 }
 
 extern "C" void PSIM_CALL regTopMenuButton(const char* module, size_t moduleLen, const char* name,
-    size_t nameLen, PSIM_Void_Callback callback) {
+                                           size_t nameLen, PSIM_Void_Callback callback) {
     std::string buttonName{name, nameLen};
     std::string moduleName{module, moduleLen};
     addModuleTopMenuButton(moduleName, buttonName, restructureFunction(callback));
 }
 
-void regAlert(const char *module, size_t moduleLen, const char *text, size_t textLen) {
-    std::ignore = module;
-    std::ignore = moduleLen;
-    pushPopUpAlert(std::string{text, textLen});
+extern "C" void regAlert(const char *module, size_t moduleLen, const char *text, size_t textLen) {
+    pushPopUpAlert(std::format("{}: {}", std::string{module, moduleLen}, std::string{text, textLen}));
+}
+
+extern "C" void PSIM_CALL wrConfig(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+                                   const void* data, size_t dataLen) {
+    std::string configName = std::string{module, moduleLen} + std::string{name, nameLen};
+    setConfigValueVariadicLength(configName, data, dataLen);
+}
+
+extern "C" bool PSIM_CALL rdConfig(const char* module, size_t moduleLen, const char* name, size_t nameLen,
+                                   void* data, size_t dataLen) {
+    std::string configName = std::string{module, moduleLen} + std::string{name, nameLen};
+    return readConfigValueVariadicLength(configName, data, dataLen);
+}
+
+extern "C" void regSwitch(const char *module, size_t moduleLen, const char *name, size_t nameLen, bool defaultValue,
+    PSIM_Boolean_Change_Callback onChange) {
+    addModuleSwitch(std::string{module, moduleLen}, std::string{name, nameLen}, defaultValue,
+        restructureFunction(onChange));
 }

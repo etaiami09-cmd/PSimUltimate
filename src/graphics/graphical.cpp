@@ -19,7 +19,10 @@
 #include "particle_creation_gui.hpp"
 #include "constants_gui.hpp"
 #include "about_window.hpp"
+#include "configs.hpp"
+#include "fps.hpp"
 #include "pop_up_alerts.hpp"
+#include "settings_menu.hpp"
 
 namespace {
 constexpr const char *windowTitle = "Particle Simulator Ultimate";
@@ -37,7 +40,13 @@ void startWindow() {
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, windowTitle);
-    SetTargetFPS(targetFPS);
+    auto fpsConfig = getConfigValue<int>("FPS");
+    if (fpsConfig.has_value()) {
+        setFPS(std::get<0>(fpsConfig.value()));
+    }
+    else {
+        setFPS(targetFPS);
+    }
     ImGui::CreateContext();
     ImGui::PushFont(ImGui::GetIO().Fonts->AddFontDefaultVector(), 13.0f);
     rlImGuiSetup(true);
@@ -83,6 +92,7 @@ void drawGUI() {
     ImGui::Begin("Controls", nullptr,
                  ImGuiWindowFlags_NoMove
                  | ImGuiWindowFlags_NoCollapse
+                 | ImGuiWindowFlags_OnlyRightResize
     );
     currentWindowSize = ImGui::GetWindowSize();
 
@@ -93,6 +103,7 @@ void drawGUI() {
     drawAboutWindow();
     ImGui::End();
     displayPopups();
+    renderSettingsModalIfOpened();
     rlImGuiEnd();
 }
 

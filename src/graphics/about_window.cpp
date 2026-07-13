@@ -21,13 +21,9 @@ void drawAboutWindow() {
     ImGui::Text("Project Homepage:");
     ImGui::SameLine();
     
-    if (ImGui::TextLink("Visit GitHub")) {
-        openShellURL(PSimImpl::repoURL);
-    }
+    ImGui::TextLinkOpenURL("Visit GitHub", PSimImpl::repoURL);
 
     ImGui::Text("Report A Bug:");
     ImGui::SameLine();
-    if (ImGui::TextLink("Click")) {
-        openShellURL(PSimImpl::repoIssuesURL);
-    }
+    ImGui::TextLinkOpenURL("Click", PSimImpl::repoIssuesURL);
 }

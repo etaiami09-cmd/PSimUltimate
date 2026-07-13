@@ -3,6 +3,19 @@
 
 namespace PSimImpl {
     constexpr auto PSimAppVersion_ = "@PROJECT_VERSION@";
+
+#if defined(__clang__)
+// this macro guard stops clang from accidentally flagging #embed as
+// a compiler extension
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc23-extensions"
+#endif
+    constexpr char PSimLicenseText_[] = {
+    #embed "License.txt"
+    , 0};
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 }
 
 #endif

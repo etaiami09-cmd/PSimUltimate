@@ -11,6 +11,8 @@
 #include <map>
 #include <set>
 
+#include "settings_menu.hpp"
+
 namespace {
 
 std::map<std::string, std::map<std::string, std::function<void()>>> moduleButtons;
@@ -28,6 +30,10 @@ void drawFileMenu() {
         if (ImGui::MenuItem("Open Module")) {
             loadModuleWithDialog();
         }
+        ImGui::SeparatorText("Settings");
+        if (ImGui::MenuItem("Open Settings")) {
+            openSettingsMenu();
+        }
         ImGui::SeparatorText("Help");
         if (ImGui::MenuItem("Visit GitHub")) {
             openShellURL(PSimImpl::repoURL);
@@ -36,7 +42,7 @@ void drawFileMenu() {
             openShellURL(PSimImpl::repoIssuesURL);
         }
         ImGui::EndMenu();
-    }    
+    }
 }
 void drawEditMenu() {
     if (ImGui::BeginMenu("Edit")) {

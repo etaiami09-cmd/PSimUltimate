@@ -35,7 +35,8 @@ PSIM_Module_Function_Table functionTable{regModule,
     regConstant, regAttribute, regForce,
     regVelocity, regPosition, regRenderer,
     accConstant, accAttribute,
-    regKeybind, regTopMenuButton, regAlert};
+    regKeybind, regTopMenuButton, regAlert, wrConfig,
+    rdConfig, regSwitch};
 } // namespace
 
 void loadBuiltinModuleTable() noexcept {
