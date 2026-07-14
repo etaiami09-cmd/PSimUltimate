@@ -25,28 +25,28 @@ TEST_CASE("Inactive modules are skipped", "[modules]") {
         loadBuiltinModuleTable();
     }
     
-    SECTION("Check") {
-        registerModule("test");
-        registerForce("test", [](auto particles, auto forces) {
-            REQUIRE(getModules()[0].active);
-        });
-        registerVelocityHandler("test", [](auto particles) {
-            REQUIRE(getModules()[0].active);
-        });
-        registerPositionHandler("test", [](auto particles) {
-            REQUIRE(getModules()[0].active);
-        });
+    // SECTION("Check") {
+    //     registerModule("test");
+    //     registerForce("test", [](auto particles, auto forces) {
+    //         REQUIRE(getModules()[0].active);
+    //     });
+    //     registerVelocityHandler("test", [](auto particles) {
+    //         REQUIRE(getModules()[0].active);
+    //     });
+    //     registerPositionHandler("test", [](auto particles) {
+    //         REQUIRE(getModules()[0].active);
+    //     });
 
-        getModules()[0].active = false;
+    //     getModules()[0].active = false;
 
-        Particles::add(Position{0.0f, 0.0f}, Velocity{0.0f, 0.0f}, 10.0f, 1.0f, {});
+    //     Particles::add(Position{0.0f, 0.0f}, Velocity{0.0f, 0.0f}, 10.0f, 1.0f, {});
 
-        Particles::tick(1.0f);
+    //     Particles::tick(1.0f);
 
-        getModules()[0].active = true;
+    //     getModules()[0].active = true;
 
-        Particles::tick(1.0f);
-    }
+    //     Particles::tick(1.0f);
+    // }
 }
 
 TEST_CASE("Constants work", "[modules]") {

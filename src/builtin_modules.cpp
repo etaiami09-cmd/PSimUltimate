@@ -89,6 +89,9 @@ void initElectrostaticModule() noexcept {
     if (drawOptional.has_value()) {
         shouldDrawElectric = drawOptional.value();
     }
+	else {
+		writeConfig<bool>(module, "ShouldDraw", shouldDrawElectric);
+	}
     registerSwitch(module, "Color Particles By Charge", shouldDrawElectric,
         [=](bool newValue) {
             shouldDrawElectric = newValue;

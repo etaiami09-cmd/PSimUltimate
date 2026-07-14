@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(ParticleSimulatorUltimate VERSION 0.1.5 LANGUAGES CXX)
+project(ParticleSimulatorUltimate VERSION 0.1.6 LANGUAGES CXX)
 
 enable_testing()
 
@@ -67,6 +67,9 @@ target_compile_options(PSimTestableLib PRIVATE
 add_executable(PSimUlt src/core/main.cpp)
 target_link_libraries(PSimUlt PRIVATE PSimTestableLib)
 
+target_compile_options(PSimTestableLib PRIVATE -freflection)
+target_compile_options(PSimUlt PRIVATE -freflection)
+
 target_link_options(PSimUlt PRIVATE
         -static
         -static-libgcc
@@ -78,7 +81,13 @@ set_target_properties(PSimUlt PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
 target_compile_definitions(PSimTestableLib PUBLIC PSIM_STATIC_BUILD)
 
 target_link_options(PSimUlt PRIVATE
-        $<$<PLATFORM_ID:Windows>:-mwindows$<COMMA>-Wl,--entry=mainCRTStartup>)
+        $<$<PLATFORM_ID:Windows>:-mwindows>
+        $<$<PLATFORM_ID:Windows>:-Wl,--entry=mainCRTStartup>
+)
+
+# gcc 16.1.0 has a bug when compiling with debug mode, this solves it
+target_compile_definitions(PSimUlt PRIVATE "$<$<CONFIG:Debug>:__cpp_lib_constexpr_exceptions=0>")
+target_compile_definitions(PSimTestableLib PRIVATE "$<$<CONFIG:Debug>:__cpp_lib_constexpr_exceptions=0>")
 
 target_include_directories(PSimUlt PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
