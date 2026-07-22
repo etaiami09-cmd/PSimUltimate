@@ -19,6 +19,7 @@
 #include "controls.hpp"
 #include "menu_bar.hpp"
 #include "pop_up_alerts.hpp"
+#include "serializer.hpp"
 #include "settings_menu.hpp"
 
 namespace {
@@ -74,6 +75,27 @@ std::function<void(bool)>
     return [function, handle = std::move(handle)](bool newValue) {
         function.invoke(function.capture, newValue);
     };
+}
+
+std::function<std::string()>
+	restructureFunction(PSIM_Serialization_Callback function)
+{
+	auto handle = std::shared_ptr<void>(function.capture, function.destroy);
+	return [function, handle = std::move(handle)]() {
+		auto psimString = function.invoke(function.capture);
+		std::string result{psimString.data, psimString.size};
+		delete psimString.data;
+		return result;
+	};
+}
+
+std::function<void(std::string)>
+	restructureFunction(PSIM_Deserialization_Callback function)
+{
+	auto handle = std::shared_ptr<void>(function.capture, function.destroy);
+	return [function, handle = std::move(handle)](std::string data) {
+		function.invoke(function.capture, PSIM_String{data.data(), data.size()});
+	};
 }
 
 
@@ -205,4 +227,12 @@ extern "C" void regSwitch(const char *module, size_t moduleLen, const char *name
     PSIM_Boolean_Change_Callback onChange) {
     addModuleSwitch(std::string{module, moduleLen}, std::string{name, nameLen}, defaultValue,
         restructureFunction(onChange));
+}
+
+extern "C" void regSerialize(const char* module, size_t moduleLen, PSIM_Serialization_Callback serializer) {
+	addModuleSerializer(std::string{module, moduleLen}, restructureFunction(serializer));
+}
+
+extern "C" void regDeserialize(const char* module, size_t moduleLen, PSIM_Deserialization_Callback deserializer) {
+	addModuleDeserializer(std::string{module, moduleLen}, restructureFunction(deserializer));
 }

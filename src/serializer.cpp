@@ -18,6 +18,9 @@
 
 namespace {
 
+std::map<std::string, std::function<std::string()>> moduleSerializers;
+std::map<std::string, std::function<void(std::string)>> moduleDeserializers;
+
 std::unordered_map<std::string, float> buildConstantsMap() {
     std::unordered_map<std::string, float> map;
     for (const auto& constant : getAllConstants()) {
@@ -34,6 +37,11 @@ void serializeModules(nlohmann::json& json) {
         ++moduleIndexIterator;
     }
     json["Modules"] = modules;
+	nlohmann::json moduleData;
+	for (const auto& moduleSerializer : moduleSerializers) {
+		moduleData[moduleSerializer.first] = moduleSerializer.second();
+	}
+	json["Module-Specific Data"] = moduleData;
 }
 
 void serializeConstants(nlohmann::json& json) {
@@ -101,6 +109,12 @@ void deserializeModules(nlohmann::json& modules) {
     setModuleOrders(orderedModuleNames);
 }
 
+void deserializeModuleData(nlohmann::json& moduleData) {
+	for (const auto& moduleDeserializer : moduleDeserializers) {
+		moduleDeserializer.second(moduleData[moduleDeserializer.first]);
+	}
+}
+
 bool assertValidModules(const nlohmann::json& modules) {
     if (!modules.is_object()) {
         pushPopUpAlert("Deserialization error: Modules is not an object.");
@@ -148,6 +162,17 @@ bool assertValidModules(const nlohmann::json& modules) {
         return false;
     }
     return true;
+}
+
+bool assertValidModuleSerializations(const nlohmann::json& serializations) {
+	return std::ranges::all_of(moduleSerializers, [&serializations](const auto& serializingModule) {
+		if (!serializations.contains(serializingModule)) {
+			pushPopUpAlert(std::format("Deserialization error: Missing serialization data for"
+				"module {}.", serializingModule));
+			return false;
+		}
+		return true;
+	}, &std::pair<const std::string, std::function<std::string()>>::first);
 }
 
 bool assertValidParticle(const nlohmann::json& particle) {
@@ -262,6 +287,14 @@ bool assertValidSave(const nlohmann::json& json) {
     if (!assertValidModules(modules)) {
         return false;
     }
+    if (!json.contains("Module-Specific Data")) {
+	    pushPopUpAlert("Deserialization error: No Module Serialization data in save file.");
+	    return false;
+    }
+	const auto& moduleData = json["Module-Specific Data"];
+	if (!assertValidModuleSerializations(moduleData)) {
+		return false;
+	}
     return true;
 }
 
@@ -313,10 +346,28 @@ void deserializeState(const std::string& path) {
     }
     if (!assertValidSave(json)) {return;}
     deserializeModules(json["Modules"]);
+	deserializeModuleData(json["Module-Specific Data"]);
     deserializeConstants(json);
     size_t particleCount = json["Particles"].size();
     Particles::resize(particleCount);
     for (size_t i = 0; i < particleCount; i++) {
         deserializeParticle(i, json["Particles"]);
     }
+}
+
+void addModuleSerializer(const std::string& module, std::function<std::string()> serializer) {
+	moduleSerializers[module] = serializer;
+}
+
+void addModuleDeserializer(const std::string& module, std::function<void(std::string)> deserializer) {
+	moduleDeserializers[module] = deserializer;
+}
+
+void removeModuleSerializersAndDeserializers(const std::string& module) noexcept {
+	std::erase_if(moduleSerializers, [&module](const auto& pair) {
+		return pair.first == module;
+	});
+	std::erase_if(moduleDeserializers, [&module](const auto& pair) {
+		return pair.first == module;
+	});
 }

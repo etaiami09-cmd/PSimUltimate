@@ -14,6 +14,7 @@
 #include "menu_bar.hpp"
 #include "physics_callbacks.hpp"
 #include "pop_up_alerts.hpp"
+#include "serializer.hpp"
 #include "settings_menu.hpp"
 
 #include "module.hpp"
@@ -53,6 +54,7 @@ void removeModuleRegistries(size_t moduleIndex) noexcept {
 	removeModuleKeybinds(name);
 	removeModuleTopMenuButtons(name);
 	removeModuleSwitches(name);
+	removeModuleSerializersAndDeserializers(name);
 	cleanModulePhysicsCallbacks(moduleIndex);
 	cleanModuleGraphicsCallbacks(moduleIndex);
 }

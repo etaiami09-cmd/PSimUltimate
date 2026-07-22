@@ -21,6 +21,7 @@ constexpr ImVec2 moduleListElementSize{100, 30};
 constexpr int modeToggleHeaderPadding = 10;
 constexpr const char* repoURL = "https://github.com/etaiami09-cmd/PSimUltimate";
 constexpr const char* repoIssuesURL = "https://github.com/etaiami09-cmd/PSimUltimate/issues/new";
+constexpr const char* stardancePage = "https://stardance.hackclub.com/projects/15818";
 constexpr std::string settingsPageImGuiID{"Settings"};
 constexpr ImVec2 settingsPageSize{800, 400};
 constexpr ImVec2 settingsPageMenuSize{200, 0};

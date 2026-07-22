@@ -11,6 +11,7 @@
 #include "fps.hpp"
 #include "load_module.hpp"
 #include "module.hpp"
+#include "shutdown.hpp"
 
 int main() {
     createAppDataFolderIfNotExists();
@@ -21,7 +22,7 @@ int main() {
     initGravityModule();
     startWindow();
 
-    while (!WindowShouldClose()) {
+    while (!shouldShutdown()) {
         if (Simulation::on()) {
             Particles::tick();
         }

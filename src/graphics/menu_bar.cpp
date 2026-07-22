@@ -12,6 +12,7 @@
 #include <set>
 
 #include "settings_menu.hpp"
+#include "shutdown.hpp"
 
 namespace {
 
@@ -41,6 +42,13 @@ void drawFileMenu() {
         if (ImGui::MenuItem("Report A Bug")) {
             openShellURL(PSimImpl::repoIssuesURL);
         }
+    	if (ImGui::MenuItem("Visit On Stardance")) {
+    		openShellURL(PSimImpl::stardancePage);
+    	}
+    	ImGui::Separator();
+    	if (ImGui::MenuItem("Exit")) {
+    		shutdownApplication();
+    	}
         ImGui::EndMenu();
     }
 }

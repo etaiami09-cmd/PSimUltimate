@@ -24,6 +24,7 @@
 #include "fps.hpp"
 #include "pop_up_alerts.hpp"
 #include "settings_menu.hpp"
+#include "shutdown.hpp"
 #include "window_transformations.hpp"
 
 namespace {
@@ -59,6 +60,7 @@ void startWindow() {
     style.Colors[ImGuiCol_TitleBg] = headerColor;
     style.Colors[ImGuiCol_TitleBgCollapsed] = headerColor;
 	setScaling(getSystemScalingFactor());
+	SetExitKey(KEY_NULL);
 }
 
 void closeWindow() {
@@ -145,4 +147,7 @@ void drawFrame() {
     drawGUI();
 	endTransformationMode();
     EndDrawing();
+	if (WindowShouldClose()) {
+		shutdownApplication();
+	}
 }

@@ -55,7 +55,9 @@ add_library(PSimTestableLib STATIC ${ENGINE_SOURCES}
         include/window_transformations.hpp
         src/utils/window_transformations.cpp
         include/confirm_action.hpp
-        src/graphics/confirm_action.cpp)
+        src/graphics/confirm_action.cpp
+        include/shutdown.hpp
+        src/core/shutdown.cpp)
 target_include_directories(PSimTestableLib PUBLIC 
     include
     include/inlines

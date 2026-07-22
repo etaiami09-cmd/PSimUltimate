@@ -64,6 +64,11 @@ void initializePSimModule();
 
 extern "C" {
 
+struct PSIM_String {
+	const char* data;
+	size_t size;
+};
+
 struct PSIM_Callback {
     void (PSIM_CALL *invoke)(void* capture, Particle* particles, size_t count);
     void (PSIM_CALL *destroy)(void* capture);
@@ -100,6 +105,18 @@ struct PSIM_Boolean_Change_Callback {
     void* capture;
 };
 
+struct PSIM_Serialization_Callback {
+	PSIM_String (PSIM_CALL *invoke)(void* capture);
+	void (PSIM_CALL *destroy)(void* capture);
+	void* capture;
+};
+
+struct PSIM_Deserialization_Callback {
+	void (PSIM_CALL *invoke)(void* capture, const PSIM_String data);
+	void (PSIM_CALL *destroy)(void* capture);
+	void* capture;
+};
+
 void PSIM_CALL regModule(const char* module, size_t moduleLen);
 void PSIM_CALL regConstant(const char* module, size_t moduleLen, const char* name, size_t nameLen, float defaultValue,
     float minValue, float maxValue, PSIM_Constant_Change_Callback onChange);
@@ -123,6 +140,10 @@ bool PSIM_CALL rdConfig(const char* module, size_t moduleLen, const char* name, 
     void* data, size_t dataLen);
 void PSIM_CALL regSwitch(const char* module, size_t moduleLen, const char* name, size_t nameLen,
     bool defaultValue, PSIM_Boolean_Change_Callback onChange);
+void PSIM_CALL regSerialize(const char* module, size_t moduleLen,
+	PSIM_Serialization_Callback serializer);
+void PSIM_CALL regDeserialize(const char* module, size_t moduleLen,
+	PSIM_Deserialization_Callback deserializer);
 
 struct PSIM_Module_Function_Table {
     decltype(regModule)* _regModule;
@@ -140,6 +161,8 @@ struct PSIM_Module_Function_Table {
     decltype(wrConfig)* _wrConfig;
     decltype(rdConfig)* _rdConfig;
     decltype(regSwitch)* _regSwitch;
+	decltype(regSerialize)* _regSerialize;
+	decltype(regDeserialize)* _regDeserialize;
 };
 
 inline const PSIM_Module_Function_Table* PSIM_Api_Table;
@@ -255,6 +278,42 @@ inline PSIM_Graphics_Callback destructureFunction(std::function<void(std::span<c
     return PSIM_Graphics_Callback{invoke, destroy, held};
 }
 
+inline PSIM_Serialization_Callback destructureFunction(std::function<std::string()> function) {
+	using Fn = decltype(function);
+	auto* held = new Fn(std::move(function));
+	auto invoke = [](void* capture) noexcept {
+		auto* f = static_cast<Fn*>(capture);
+		try {
+			auto result = (*f)();
+			auto* dataBuffer = new char[result.size()];
+			memcpy(dataBuffer, result.data(), result.size());
+			return PSIM_String{dataBuffer, result.size()};
+		}
+		catch (...) {}
+		return PSIM_String{nullptr, 0};
+	};
+	auto destroy = [](void* capture) noexcept {
+		delete static_cast<Fn*>(capture);
+	};
+	return PSIM_Serialization_Callback{invoke, destroy, held};
+}
+
+inline PSIM_Deserialization_Callback destructureFunction(std::function<void(std::string)> function) {
+	using Fn = decltype(function);
+	auto* held = new Fn(std::move(function));
+	auto invoke = [](void* capture, PSIM_String data) noexcept {
+		auto* f = static_cast<Fn*>(capture);
+		try {
+			(*f)(std::string{data.data, data.size});
+		}
+		catch (...) {}
+	};
+	auto destroy = [](void* capture) noexcept {
+		delete static_cast<Fn*>(capture);
+	};
+	return PSIM_Deserialization_Callback{invoke, destroy, held};
+}
+
 inline void registerConstant(const std::string& module, const std::string& name, float defaultValue,
     float minValue, float maxValue, const std::function<void(float)>& onChange)
 {
@@ -356,6 +415,18 @@ inline void registerSwitch(const std::string& module, const std::string& name,
     bool defaultValue, const std::function<void(bool)>& onChange) {
     PSIM_Api_Table->_regSwitch(module.c_str(), module.size(), name.c_str(), name.size(),
         defaultValue, destructureFunction(onChange));
+}
+
+inline void registerInternalStateSerializer(const std::string& module,
+	const std::function<std::string()>& serializer) {
+	PSIM_Api_Table->_regSerialize(module.c_str(), module.size(),
+		destructureFunction(serializer));
+}
+
+inline void registerInternalStateDeserializer(const std::string& module,
+	const std::function<void(std::string)>& deserializer) {
+	PSIM_Api_Table->_regDeserialize(module.c_str(), module.size(),
+		destructureFunction(deserializer));
 }
 
 #endif
