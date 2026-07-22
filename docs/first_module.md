@@ -27,12 +27,12 @@ Each of these callback types has its own function for registering it:
 ## Registering Constants
 You can register a constant by calling ```registerConstant(const std::string& module, const std::string& name, float defaultValue, float minValue, float maxValue, std::function<void(float)> onChange)```.
 
-You can get the value of an constant by calling ```getConstantValue(const std::string& name)``` which returns a ```std::optional<float>```
+You can get the value of an constant by calling ```accessConstantValue(const std::string& name)``` which returns a ```std::optional<float>```
 
 ## Registering Attributes
 You can register an attribute by calling ```registerParticleAttribute(const std::string& module, const std::string& name, float defaultValue, float minValue, float maxValue)```
 
-You can access attribute values by calling ```getAttributeByName(const std::string& name)``` which returns a ```std::optional<std::span<float>>```.
+You can access attribute values by calling ```accessAttribute(const std::string& name)``` which returns a ```std::optional<std::span<float>>```.
 
 ## Compiling Your Module
 ### Requirements
