@@ -1,3 +1,6 @@
+#include <filesystem>
+
+#include "confirm_action.hpp"
 #include "portable-file-dialogs.h"
 #include "serializer.hpp"
 
@@ -11,12 +14,21 @@ void saveStateToFile() {
         pfd::opt::none
     );
     auto file = fileDialog.result();
-    if (!file.ends_with(".json")) {
-        file += ".json";
-    }
-    if (file.size() != 0) {
-        serializeState(file);
-    }
+    if (file.size() == 0) {return;}
+	if (!file.ends_with(".json")) {
+		file += ".json";
+	}
+    if (std::filesystem::exists(file)) {
+		confirmAction(std::format("Save state to {}", file),
+			std::format("File {} already exists. Are you sure you want to override it?"
+				" This may lead to loss of data.", file),
+				[file]() {
+					serializeState(file);
+				});
+	}
+	else {
+		serializeState(file);
+	}
 }
 
 void openStateFromFile() {
@@ -28,6 +40,11 @@ void openStateFromFile() {
     );
     auto file = fileDialog.result();
     if (!file.empty()) {
-        deserializeState(file[0]);
+    	auto filePath = file[0];
+    	confirmAction("Open Saved Simulation State",
+    		"Are you sure you want to load this save file? This will override any unsaved progress.",
+    		[filePath]() {
+    			deserializeState(filePath);
+    		});
     }
 }

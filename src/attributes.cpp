@@ -13,10 +13,10 @@ std::vector<Attribute> attributes;
 
 } // namespace
 
-void addAttribute(const std::string& name, float defaultValue,
+void addAttribute(const std::string& module, const std::string& name, float defaultValue,
     float minValue, float maxValue) noexcept {
     attributes.emplace_back(
-        name, defaultValue, minValue, maxValue,
+        module, name, defaultValue, minValue, maxValue,
         std::vector<float>(Particles::get().size(), defaultValue)
     );
 }
@@ -64,4 +64,10 @@ void pushDefaultParticleAttributes() noexcept {
         newValues.push_back(attribute.defaultValue);
     }
     addNewParticleAttributes(newValues);
+}
+
+void removeModuleAttributes(const std::string& module) noexcept {
+	std::erase_if(attributes, [&module](const auto& attribute) {
+		return attribute.module == module;
+	});
 }

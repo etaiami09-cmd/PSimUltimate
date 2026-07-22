@@ -87,16 +87,14 @@ size_t getModuleIndexByName(const std::string& name) {
 } // namespace
 
 extern "C" void PSIM_CALL regModule(const char* module, size_t moduleLen) {
-    addModule(std::string{module, moduleLen});
+    addModule(std::string{module, moduleLen}, getCurrentModuleHandle());
 }
 
 extern "C" void PSIM_CALL regConstant(const char* module, size_t moduleLen,
     const char* name, size_t len, float defaultValue,
     float minValue, float maxValue, PSIM_Constant_Change_Callback onChange)
 {
-    std::ignore = module;
-    std::ignore = moduleLen;
-    addConstant(std::string{name, len}, defaultValue,
+    addConstant(std::string{module, moduleLen}, std::string{name, len}, defaultValue,
         minValue, maxValue, restructureFunction(onChange));
 }
 
@@ -132,9 +130,7 @@ extern "C" void PSIM_CALL regPosition(const char* module, size_t moduleLen,
 
 extern "C" void PSIM_CALL regAttribute(const char* module, size_t moduleLen, const char* name, size_t nameLen,
     float defaultValue, float minValue, float maxValue) {
-    std::ignore = module;
-    std::ignore = moduleLen;
-    addAttribute(std::string{name, nameLen}, defaultValue, minValue, maxValue);
+    addAttribute(std::string{module, moduleLen}, std::string{name, nameLen}, defaultValue, minValue, maxValue);
 }
 
 extern "C" void PSIM_CALL regRenderer(const char* module, size_t moduleLen, PSIM_Graphics_Callback renderer) {

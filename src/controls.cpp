@@ -9,6 +9,7 @@
 #include "controls.hpp"
 
 #include "module.hpp"
+#include "module_gui.hpp"
 
 namespace {
 std::vector<Keybind> keybinds;
@@ -68,12 +69,21 @@ void registerKeybinds() noexcept {
     std::vector<KeyboardKey> saveFile{KEY_LEFT_CONTROL, KEY_S};
     keybinds.emplace_back("internal_keybind", "Save Simulation",
         saveFile, std::span<const MouseButton>{}, saveStateToFile);
+	std::vector<KeyboardKey> importExtension{KEY_LEFT_CONTROL, KEY_M};
+	keybinds.emplace_back("internal_keybind", "Import Module",
+		importExtension, std::span<const MouseButton>{}, loadModuleWithDialog);
 }
 
 void addKeybind(const std::string &module, const std::string& name,
     std::span<const KeyboardKey> keys, std::span<const MouseButton> buttons,
     const std::function<void()> &callback) noexcept {
     keybinds.emplace_back(module, name, keys, buttons, callback);
+}
+
+void removeModuleKeybinds(const std::string& module) noexcept {
+	std::erase_if(keybinds, [&module](const auto& keybind) {
+		return keybind.module == module;
+	});
 }
 
 std::span<Keybind> getKeybinds() {

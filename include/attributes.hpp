@@ -8,6 +8,7 @@
 #include <optional>
 
 struct Attribute {
+	std::string module;
     std::string name;
     float defaultValue;
     float minValue;
@@ -15,7 +16,7 @@ struct Attribute {
     std::vector<float> values;
 };
 
-void addAttribute(const std::string& name, float defaultValue,
+void addAttribute(const std::string& module, const std::string& name, float defaultValue,
     float minValue, float maxValue) noexcept;
 std::span<const Attribute> getAttributes() noexcept;
 const std::optional<Attribute&> getAttributeByName(const std::string& name);
@@ -24,5 +25,6 @@ void setParticleAttributes(size_t index, const std::vector<float>& values) noexc
 void clearAttributeValues() noexcept;
 void resizeAttributeValues(size_t newSize) noexcept;
 void pushDefaultParticleAttributes() noexcept;
+void removeModuleAttributes(const std::string& module) noexcept;
 
 #endif

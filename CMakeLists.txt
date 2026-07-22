@@ -10,11 +10,13 @@ enable_testing()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/_deps" CACHE PATH "Shared FetchContent cache across all build directories" FORCE)
+
 include(FetchContent)
 FetchContent_Declare(
     raylib
     GIT_REPOSITORY https://github.com/raysan5/raylib.git
-    GIT_TAG        master
+    GIT_TAG        9ef6850cc4cee87975883039833aa2486a47413c
     GIT_SHALLOW    TRUE
 )
 
@@ -49,7 +51,11 @@ file(GLOB_RECURSE ENGINE_SOURCES
 list(REMOVE_ITEM ENGINE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "example_module/.*")
 
-add_library(PSimTestableLib STATIC ${ENGINE_SOURCES})
+add_library(PSimTestableLib STATIC ${ENGINE_SOURCES}
+        include/window_transformations.hpp
+        src/utils/window_transformations.cpp
+        include/confirm_action.hpp
+        src/graphics/confirm_action.cpp)
 target_include_directories(PSimTestableLib PUBLIC 
     include
     include/inlines
@@ -66,6 +72,10 @@ target_compile_options(PSimTestableLib PRIVATE
 
 add_executable(PSimUlt src/core/main.cpp)
 target_link_libraries(PSimUlt PRIVATE PSimTestableLib)
+
+add_custom_command(TARGET PSimUlt POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:raylib> $<TARGET_FILE_DIR:PSimUlt>)
 
 target_compile_options(PSimTestableLib PRIVATE -freflection)
 target_compile_options(PSimUlt PRIVATE -freflection)

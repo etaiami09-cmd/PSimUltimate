@@ -1,10 +1,20 @@
 #include <algorithm>
+#include <format>
 #include <vector>
 #include <string>
 #include <span>
 #include <optional>
 #include <list>
 #include <ranges>
+
+#include "attributes.hpp"
+#include "constants.hpp"
+#include "controls.hpp"
+#include "graphics_callbacks.hpp"
+#include "menu_bar.hpp"
+#include "physics_callbacks.hpp"
+#include "pop_up_alerts.hpp"
+#include "settings_menu.hpp"
 
 #include "module.hpp"
 
@@ -26,18 +36,33 @@ std::optional<Module &> getModuleByName(const std::string &name) noexcept {
     return std::optional<Module &>{*search};
 }
 
-size_t getRawModuleIndexByName(const std::string& name) {
+std::optional<size_t> getRawModuleIndexByName(const std::string& name) {
     auto search = std::ranges::find_if(modules, [&](auto &module) {
         return module.name == name;
     });
-    return search - modules.begin();
+	if (search == modules.end()) {
+		return {};
+	}
+	return search - modules.begin();
+}
+
+void removeModuleRegistries(size_t moduleIndex) noexcept {
+	const auto& name = modules[moduleIndex].name;
+	removeModuleConstants(name);
+	removeModuleAttributes(name);
+	removeModuleKeybinds(name);
+	removeModuleTopMenuButtons(name);
+	removeModuleSwitches(name);
+	cleanModulePhysicsCallbacks(moduleIndex);
+	cleanModuleGraphicsCallbacks(moduleIndex);
 }
 
 } // namespace
 
-void addModule(const std::string &name) noexcept {
+
+void addModule(const std::string &name, ModuleHandle handle) noexcept {
     if (!getModuleByName(name).has_value()) {
-        modules.emplace_back(name, false);
+        modules.emplace_back(name, handle, false);
         moduleIndexOrder.push_back(modules.size() - 1);
     }
 }
@@ -84,7 +109,7 @@ void setModuleOrders(const std::span<std::string>& moduleOrders) noexcept {
     std::vector<size_t> indices = std::views::iota(0uz, modules.size())
                                     | std::ranges::to<std::vector<size_t>>();
     for (const auto& module : moduleOrders) {
-        size_t rawModuleIndex = getRawModuleIndexByName(module);
+        size_t rawModuleIndex = getRawModuleIndexByName(module).value();
         newOrder.push_back(rawModuleIndex);
         std::erase(indices, rawModuleIndex);
     }
@@ -92,4 +117,24 @@ void setModuleOrders(const std::span<std::string>& moduleOrders) noexcept {
         newOrder.push_back(index);
     }
     moduleIndexOrder = std::move(newOrder);
+}
+
+void removeModule(const std::string& name) {
+	auto moduleIndex = getRawModuleIndexByName(name);
+	if (!moduleIndex.has_value()) {
+		pushPopUpAlert(std::format("Attempted to remove non-existing module '{}'.", name).c_str());
+		return;
+	}
+	ModuleHandle handle = modules[moduleIndex.value()].handle;
+	removeModuleRegistries(moduleIndex.value());
+	modules.erase(modules.begin() + moduleIndex.value());
+	moduleIndexOrder.remove(moduleIndex.value());
+	if (!std::ranges::contains(modules, handle, &Module::handle)) {
+		unloadModule(handle);
+	}
+	for (auto& index : moduleIndexOrder) {
+		if (index > moduleIndex.value()) {
+			index--;
+		}
+	}
 }

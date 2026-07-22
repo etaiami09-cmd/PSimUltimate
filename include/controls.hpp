@@ -30,6 +30,8 @@ void addKeybind(const std::string& module, const std::string& name,
     std::span<const KeyboardKey> keys, std::span<const MouseButton> buttons,
     const std::function<void()>& callback) noexcept;
 
+void removeModuleKeybinds(const std::string& module) noexcept;
+
 std::span<Keybind> getKeybinds();
 
 template<>

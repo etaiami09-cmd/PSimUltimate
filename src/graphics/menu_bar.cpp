@@ -27,7 +27,7 @@ void drawFileMenu() {
             saveStateToFile();
         }
         ImGui::SeparatorText("Modules");
-        if (ImGui::MenuItem("Open Module")) {
+        if (ImGui::MenuItem("Open Module", "Ctrl+M")) {
             loadModuleWithDialog();
         }
         ImGui::SeparatorText("Settings");
@@ -78,4 +78,10 @@ void drawMenuBar() {
 
 void addModuleTopMenuButton(const std::string &module, const std::string &name, std::function<void()> callback) {
     moduleButtons[module][name] = callback;
+}
+
+void removeModuleTopMenuButtons(const std::string& module) noexcept {
+	std::erase_if(moduleButtons, [&module](const auto& moduleButtonsPair) {
+		return moduleButtonsPair.first == module;
+	});
 }

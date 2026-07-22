@@ -20,9 +20,11 @@
 #include "constants_gui.hpp"
 #include "about_window.hpp"
 #include "configs.hpp"
+#include "confirm_action.hpp"
 #include "fps.hpp"
 #include "pop_up_alerts.hpp"
 #include "settings_menu.hpp"
+#include "window_transformations.hpp"
 
 namespace {
 constexpr const char *windowTitle = "Particle Simulator Ultimate";
@@ -39,6 +41,7 @@ void startWindow() {
     SetTraceLogLevel(LOG_NONE);
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+	SetConfigFlags(FLAG_WINDOW_HIGHDPI);
     InitWindow(windowWidth, windowHeight, windowTitle);
     auto fpsConfig = getConfigValue<int>("FPS");
     if (fpsConfig.has_value()) {
@@ -55,6 +58,7 @@ void startWindow() {
     const ImVec4 &headerColor = style.Colors[ImGuiCol_TitleBgActive];
     style.Colors[ImGuiCol_TitleBg] = headerColor;
     style.Colors[ImGuiCol_TitleBgCollapsed] = headerColor;
+	setScaling(getSystemScalingFactor());
 }
 
 void closeWindow() {
@@ -104,15 +108,16 @@ void drawGUI() {
     ImGui::End();
     displayPopups();
     renderSettingsModalIfOpened();
-    rlImGuiEnd();
+    drawConfirmationPopup();
+	rlImGuiEnd();
 }
 
 void drawParticles() {
     auto particles = Particles::get();
     for (const auto &particle: particles) {
         DrawCircle(
-            static_cast<int>(particle.getPosition().x + getPSimGUIWidth()),
-            static_cast<int>(particle.getPosition().y + ImGui::GetFrameHeight()),
+            static_cast<int>(particle.getPosition().x),
+            static_cast<int>(particle.getPosition().y),
             particle.getRadius(), RED);
     }
 }
@@ -121,6 +126,8 @@ void drawParticles() {
 void drawFrame() {
     BeginDrawing();
     ClearBackground(WHITE);
+    setOffset({getPSimGUIWidth(), ImGui::GetFrameHeight()});
+    beginTransformationMode();
     drawParticles();
     for (const auto moduleIndex: getModuleIndexOrders()) {
         const auto &module = getModules()[moduleIndex];
@@ -132,6 +139,10 @@ void drawFrame() {
             }
         }
     }
+	endTransformationMode();
+	setOffset({0, 0});
+	beginTransformationMode();
     drawGUI();
+	endTransformationMode();
     EndDrawing();
 }

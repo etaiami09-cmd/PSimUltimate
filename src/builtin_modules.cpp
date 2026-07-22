@@ -62,9 +62,8 @@ void drawElectricParticles(std::span<const Particle> particles) {
             color = (charge > 0) ? BLUE : RED;
         }
         DrawCircle(
-            static_cast<int>(particles[i].getPosition().x
-                             + static_cast<float>(getPSimGUIWidth())),
-            static_cast<int>(particles[i].getPosition().y + ImGui::GetFrameHeight()),
+            static_cast<int>(particles[i].getPosition().x),
+            static_cast<int>(particles[i].getPosition().y),
             particles[i].getRadius(), color
         );
     }

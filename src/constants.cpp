@@ -15,9 +15,9 @@ void Constant::set() {
     onChange(value);
 }
 
-void addConstant(const std::string& name, float defaultValue,
+void addConstant(const std::string& module, const std::string& name, float defaultValue,
                  float minValue, float maxValue, std::function<void(float)>&& onChange) noexcept {
-    constants[name] = {defaultValue, defaultValue,
+    constants[name] = {module, defaultValue, defaultValue,
         defaultValue, minValue, maxValue, std::move(onChange)};
 }
 
@@ -42,4 +42,10 @@ std::optional<float*> getConstantBuffer(const std::string& name) noexcept {
         return &constants[name].buffer;
     }
     return {};
+}
+
+void removeModuleConstants(const std::string& module) noexcept {
+	std::erase_if(constants, [&module](const auto& pair) {
+		return module == pair.second.module;
+	});
 }

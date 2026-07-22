@@ -10,6 +10,7 @@
 #include "configs.hpp"
 #include "fps.hpp"
 #include "load_module.hpp"
+#include "module.hpp"
 
 int main() {
     createAppDataFolderIfNotExists();

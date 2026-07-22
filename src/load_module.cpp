@@ -37,6 +37,9 @@ PSIM_Module_Function_Table functionTable{regModule,
     accConstant, accAttribute,
     regKeybind, regTopMenuButton, regAlert, wrConfig,
     rdConfig, regSwitch};
+
+ModuleHandle currentModuleHandle;
+
 } // namespace
 
 void loadBuiltinModuleTable() noexcept {
@@ -46,16 +49,18 @@ void loadBuiltinModuleTable() noexcept {
 // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 void loadModule(const std::string& dllName) {
 #if defined(_WIN32)
-    auto* module = LoadLibraryA(dllName.c_str());
-    auto entry = GetProcAddress(module, "PSIM_Initialize_Module");
+    ModuleHandle module = LoadLibraryA(dllName.c_str());
+	auto entry = GetProcAddress(module, "PSIM_Initialize_Module");
     auto callable = reinterpret_cast<void(PSIM_CALL*)(const PSIM_Module_Function_Table*)>(entry);
     if (callable == nullptr) {
         pushPopUpAlert("Error: Could not find module entry point.");
         return;
     }
+	currentModuleHandle = module;
     callable(&functionTable);
+	currentModuleHandle = {};
 #else
-    auto* handle = dlopen(dllName, RTLD_NOW | RTLD_LOCAL);
+    ModuleHandle handle = dlopen(dllName, RTLD_NOW | RTLD_LOCAL);
     dlerror();
     auto entry = reinterpret_cast<void(*)(const PSIM_Module_Function_Table*)>(
         dlsym(module, "PSIM_Initialize_Module")
@@ -64,7 +69,21 @@ void loadModule(const std::string& dllName) {
         pushPopUpAlert("Error: Could not find module entry point.");
         return;
     }
-    entry(&functionTable);
+    currentModuleHandle = module;
+	entry(&functionTable);
+	currentModuleHandle = {};
 #endif
+}
+
+void unloadModule(ModuleHandle handle) {
+#if defined(_WIN32)
+	FreeLibrary(handle);
+#else
+	dlclose(handle);
+#endif
+}
+
+ModuleHandle getCurrentModuleHandle() noexcept {
+	return currentModuleHandle;
 }
 // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)

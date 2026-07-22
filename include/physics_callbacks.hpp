@@ -15,6 +15,7 @@ using PositionHandler = ModuleCallback<std::span<Particle>>;
 void addForceHandler(const ForceHandler& forceHandler) noexcept;
 void addVelocityHandler(const VelocityHandler& velocityHandler) noexcept;
 void addPositionHandler(const PositionHandler& positionHandler) noexcept;
+void cleanModulePhysicsCallbacks(size_t moduleIndex) noexcept;
 
 std::span<const ForceHandler> getForceHandlers() noexcept;
 std::span<const VelocityHandler> getVelocityHandlers() noexcept;

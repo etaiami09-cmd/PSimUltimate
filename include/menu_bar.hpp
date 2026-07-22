@@ -7,5 +7,6 @@
 void drawMenuBar();
 
 void addModuleTopMenuButton(const std::string& module, const std::string& name, std::function<void()> callback);
+void removeModuleTopMenuButtons(const std::string& module) noexcept;
 
 #endif

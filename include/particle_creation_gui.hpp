@@ -3,4 +3,14 @@
 
 void drawParticleCreationGUI();
 
+bool shouldDrawTarget();
+void setShouldDrawTarget(bool newValue);
+
+std::array<float, 4> getNewParticleTargetColor();
+void setNewParticleTargetColor(std::array<float, 4> newColor);
+int getNewParticleTargetLength();
+void setNewParticleTargetLength(int newLength);
+int getNewParticleTargetWidth();
+void setNewParticleTargetWidth(int newWidth);
+
 #endif

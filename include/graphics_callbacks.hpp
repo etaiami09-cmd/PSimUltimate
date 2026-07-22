@@ -10,5 +10,6 @@ using GraphicsHandler = ModuleCallback<std::span<const Particle>>;
 
 void addGraphicsHandler(const GraphicsHandler& graphicsHandler) noexcept;
 std::span<const GraphicsHandler> getGraphicsHandlers() noexcept;
+void cleanModuleGraphicsCallbacks(size_t moduleIndex) noexcept;
 
 #endif
