@@ -19,7 +19,7 @@ This project is written over summer as part of the Stardance program.
 ### Prerequisites
 
 - [CMake](https://cmake.org/) 3.30 or newer
-- [LLVM/Clang](https://releases.llvm.org/) installed to `C:\Program Files\LLVM\` (the path is hardcoded in `CMakeLists.txt`)
+- A C++ compiler updated to C++26, and a C++26-compliant libc++.
 - Git (required by CMake's FetchContent to download raylib)
 - An internet connection for the first build (raylib is fetched automatically)
 
