@@ -133,7 +133,7 @@ void drawFrame() {
     drawParticles();
     for (const auto moduleIndex: getModuleIndexOrders()) {
         const auto &module = getModules()[moduleIndex];
-        if (module.active) {
+        if (isModuleActive(module)) {
             for (const auto &graphicsHandler: getGraphicsHandlers()) {
                 if (graphicsHandler.moduleIndex == moduleIndex) {
                     graphicsHandler(Particles::get());

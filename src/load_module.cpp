@@ -36,7 +36,7 @@ PSIM_Module_Function_Table functionTable{regModule,
     regVelocity, regPosition, regRenderer,
     accConstant, accAttribute,
     regKeybind, regTopMenuButton, regAlert, wrConfig,
-    rdConfig, regSwitch, regSerialize, regDeserialize};
+    rdConfig, regSwitch, regSerialize, regDeserialize, regNonToggleableModule};
 
 ModuleHandle currentModuleHandle;
 

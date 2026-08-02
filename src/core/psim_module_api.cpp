@@ -109,19 +109,23 @@ size_t getModuleIndexByName(const std::string& name) {
 } // namespace
 
 extern "C" void PSIM_CALL regModule(const char* module, size_t moduleLen) {
-    addModule(std::string{module, moduleLen}, getCurrentModuleHandle());
+    addModule(std::string{module, moduleLen}, getCurrentModuleHandle(), true);
+}
+
+extern "C" void regNonToggleableModule(const char* module, size_t moduleLen) {
+	addModule(std::string{module, moduleLen}, getCurrentModuleHandle(), false);
 }
 
 extern "C" void PSIM_CALL regConstant(const char* module, size_t moduleLen,
-    const char* name, size_t len, float defaultValue,
-    float minValue, float maxValue, PSIM_Constant_Change_Callback onChange)
+                                      const char* name, size_t len, float defaultValue,
+                                      float minValue, float maxValue, PSIM_Constant_Change_Callback onChange)
 {
     addConstant(std::string{module, moduleLen}, std::string{name, len}, defaultValue,
         minValue, maxValue, restructureFunction(onChange));
 }
 
 extern "C" void PSIM_CALL regForce(const char* module, size_t moduleLen,
-    PSIM_Force_Callback forceHandler) {
+                                   PSIM_Force_Callback forceHandler) {
     addForceHandler(
         ForceHandler{
             restructureFunction(forceHandler),
@@ -131,7 +135,7 @@ extern "C" void PSIM_CALL regForce(const char* module, size_t moduleLen,
 }
 
 extern "C" void PSIM_CALL regVelocity(const char* module, size_t moduleLen,
-    PSIM_Callback velocityHandler) {
+                                      PSIM_Callback velocityHandler) {
     addVelocityHandler(
         VelocityHandler{
             restructureFunction(velocityHandler),
@@ -141,7 +145,7 @@ extern "C" void PSIM_CALL regVelocity(const char* module, size_t moduleLen,
 }
 
 extern "C" void PSIM_CALL regPosition(const char* module, size_t moduleLen,
-    PSIM_Callback positionHandler) {
+                                      PSIM_Callback positionHandler) {
     addPositionHandler(
         PositionHandler{
             restructureFunction(positionHandler),
@@ -151,7 +155,7 @@ extern "C" void PSIM_CALL regPosition(const char* module, size_t moduleLen,
 }
 
 extern "C" void PSIM_CALL regAttribute(const char* module, size_t moduleLen, const char* name, size_t nameLen,
-    float defaultValue, float minValue, float maxValue) {
+                                       float defaultValue, float minValue, float maxValue) {
     addAttribute(std::string{module, moduleLen}, std::string{name, nameLen}, defaultValue, minValue, maxValue);
 }
 
@@ -191,8 +195,8 @@ extern "C" void PSIM_CALL accAttribute(const char* name, size_t nameLen, bool* h
 }
 
 extern "C" void PSIM_CALL regKeybind(const char* module, size_t moduleLen, const char* name, size_t nameLen,
-    const KeyboardKey* keys, size_t keysLen, const MouseButton* buttons, size_t buttonsLen,
-    PSIM_Void_Callback callback) {
+                                     const KeyboardKey* keys, size_t keysLen, const MouseButton* buttons, size_t buttonsLen,
+                                     PSIM_Void_Callback callback) {
     std::string moduleName{module, moduleLen};
     std::string keybindName{name, nameLen};
     std::span<const KeyboardKey> keybindKeys{keys, keysLen};
@@ -224,7 +228,7 @@ extern "C" bool PSIM_CALL rdConfig(const char* module, size_t moduleLen, const c
 }
 
 extern "C" void regSwitch(const char *module, size_t moduleLen, const char *name, size_t nameLen, bool defaultValue,
-    PSIM_Boolean_Change_Callback onChange) {
+                          PSIM_Boolean_Change_Callback onChange) {
     addModuleSwitch(std::string{module, moduleLen}, std::string{name, nameLen}, defaultValue,
         restructureFunction(onChange));
 }

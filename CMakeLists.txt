@@ -17,7 +17,6 @@ FetchContent_Declare(
     raylib
     GIT_REPOSITORY https://github.com/raysan5/raylib.git
     GIT_TAG        9ef6850cc4cee87975883039833aa2486a47413c
-    GIT_SHALLOW    TRUE
 )
 
 set(BUILD_SHARED_LIBS ON CACHE BOOL "Forced shared library build" FORCE)

@@ -50,6 +50,15 @@ struct VectorOperators {
             - static_cast<Vec2<E>&>(other);
         return T(result.x, result.y);
     }
+	[[nodiscard]] constexpr T operator*(NumericType auto factor) const noexcept {
+    	auto result = static_cast<const Vec2<E>&>(static_cast<const T&>(*this)) * factor;
+    	return T(result.x, result.y);
+    }
+	[[nodiscard]] constexpr T operator/(NumericType auto dividor) const noexcept {
+	    auto result = static_cast<const Vec2<E>&>(static_cast<const T&>(*this)) / dividor;
+    	return T(result.x / dividor, result.y / dividor);
+    }
+
     [[nodiscard]] constexpr T operator-() const noexcept {
         return T{-static_cast<const Vec2<E>&>(static_cast<const T&>(*this))};
     }

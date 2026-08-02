@@ -62,9 +62,9 @@ void removeModuleRegistries(size_t moduleIndex) noexcept {
 } // namespace
 
 
-void addModule(const std::string &name, ModuleHandle handle) noexcept {
+void addModule(const std::string &name, ModuleHandle handle, bool toggleable) noexcept {
     if (!getModuleByName(name).has_value()) {
-        modules.emplace_back(name, handle, false);
+        modules.emplace_back(name, handle, toggleable ? std::optional<bool>{false} : std::nullopt);
         moduleIndexOrder.push_back(modules.size() - 1);
     }
 }
@@ -97,7 +97,11 @@ bool isModuleActive(const std::string &name) noexcept {
         return false;
     }
     auto& module = *search;
-    return module.active;
+    return !module.active.has_value() || module.active.value();
+}
+
+bool isModuleActive(const Module& module) noexcept {
+	return !module.active.has_value() || module.active.value();
 }
 
 bool moduleExists(const std::string& name) noexcept {

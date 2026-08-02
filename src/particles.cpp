@@ -49,18 +49,18 @@ void Particles::reset() noexcept {
 }
 
 namespace {
-void tickForces() {
+void tickForces(float dt) {
     for (size_t i = 0; i < forces.size(); i++) {
         particles[i].setVelocity(particles[i].getVelocity()
                 + Velocity{forces[i].x / particles[i].getMass(),
-                        forces[i].y / particles[i].getMass()});
+                        forces[i].y / particles[i].getMass()} * dt);
         forces[i] = {0, 0};
     }
 }
 void accumulateForces() {
     for (const auto moduleIndex : getModuleIndexOrders()) {
         const auto& module = getModules()[moduleIndex];
-        if (module.active) {
+        if (isModuleActive(module)) {
             for (const auto& forceHandler : getForceHandlers()) {
                 if (forceHandler.moduleIndex == moduleIndex) {
                     forceHandler(particles, forces);
@@ -72,7 +72,7 @@ void accumulateForces() {
 void accumulateVelocity() {
     for (const auto moduleIndex : getModuleIndexOrders()) {
         const auto& module = getModules()[moduleIndex];
-        if (module.active) {
+        if (isModuleActive(module)) {
             for (const auto& velocityHandler : getVelocityHandlers()) {
                 if (velocityHandler.moduleIndex == moduleIndex) {
                     velocityHandler(particles);
@@ -84,7 +84,7 @@ void accumulateVelocity() {
 void callPositionHandlers() {
     for (const auto moduleIndex : getModuleIndexOrders()) {
         const auto& module = getModules()[moduleIndex];
-        if (module.active) {
+        if (isModuleActive(module)) {
             for (const auto& positionHandler : getPositionHandlers()) {
                 if (positionHandler.moduleIndex == moduleIndex) {
                     positionHandler(particles);
@@ -100,7 +100,7 @@ void Particles::tick() noexcept {
     float dt = (1.0f / (getFPS() * tickCount));
     for (int i = 0; i < tickCount; i++) {
         accumulateForces();
-        tickForces();
+        tickForces(dt);
         accumulateVelocity();
         for (auto& part : particles) {
             part.tick(dt);

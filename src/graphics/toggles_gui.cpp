@@ -29,9 +29,9 @@ void drawSimulationPauseGUI() {
 }
 
 void drawModuleToggleGUI(Module& module) {
-    std::string buttonText = module.active ? "Disable" : "Enable";
+    std::string buttonText = module.active.value() ? "Disable" : "Enable";
     ImGui::AlignTextToFramePadding();
-    ImGui::Text("%s", std::format("{}: {}", module.name, module.active ? "On" : "Off").c_str());
+    ImGui::Text("%s", std::format("{}: {}", module.name, module.active.value() ? "On" : "Off").c_str());
     ImGui::SameLine();
     StyleVarHolder holder(ImGuiStyleVar_ButtonTextAlign, PSimImpl::buttonAlignImVec);
     ImGui::SetCursorPosX(
@@ -53,6 +53,8 @@ void drawModeToggleGUI() {
     GroupHolder group;
     drawSimulationPauseGUI();
     for (auto& module : getModules()) {
-        drawModuleToggleGUI(module);
+    	if (module.active.has_value()) {
+    		drawModuleToggleGUI(module);
+    	}
     }
 }
