@@ -9,3 +9,4 @@ imgui.ini
 CMakeCache.txt
 .clangd
 .clangd-tidy
+*/build/*

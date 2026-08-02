@@ -40,7 +40,7 @@ static_assert(std::is_standard_layout_v<Force> && std::is_trivially_copyable_v<F
 static_assert(sizeof(Force) == forceSize);
 
 // Register a new module
-inline void registerModule(const std::string& name);
+inline void registerModule(const std::string& name, bool toggleable = true);
 // Register a new constant
 inline void registerConstant(const std::string& module, const std::string& name, float defaultValue,
     float minValue, float maxValue, const std::function<void(float)>& onChange);
@@ -144,6 +144,7 @@ void PSIM_CALL regSerialize(const char* module, size_t moduleLen,
 	PSIM_Serialization_Callback serializer);
 void PSIM_CALL regDeserialize(const char* module, size_t moduleLen,
 	PSIM_Deserialization_Callback deserializer);
+void PSIM_CALL regNonToggleableModule(const char* module, size_t moduleLen);
 
 struct PSIM_Module_Function_Table {
     decltype(regModule)* _regModule;
@@ -163,6 +164,7 @@ struct PSIM_Module_Function_Table {
     decltype(regSwitch)* _regSwitch;
 	decltype(regSerialize)* _regSerialize;
 	decltype(regDeserialize)* _regDeserialize;
+	decltype(regNonToggleableModule)* _regNonToggleableModule;
 };
 
 inline const PSIM_Module_Function_Table* PSIM_Api_Table;
@@ -351,8 +353,13 @@ inline void registerRenderer(const std::string& module,
     destructureFunction(renderer));
 }
 
-inline void registerModule(const std::string& name) {
-    PSIM_Api_Table->_regModule(name.c_str(), name.size());
+inline void registerModule(const std::string& name, bool toggleable) {
+	if (toggleable) {
+		PSIM_Api_Table->_regModule(name.c_str(), name.size());
+	}
+	else {
+		PSIM_Api_Table->_regNonToggleableModule(name.c_str(), name.size());
+	}
 }
 
 inline std::optional<float> accessConstantValue(const std::string& name) {
