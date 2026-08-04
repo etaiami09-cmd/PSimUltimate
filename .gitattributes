@@ -1,1 +1,3 @@
 extern/* linguist-vendored
+extra_modules/*/include/* linguist-vendored
+example_module/include/* linguist-vendored

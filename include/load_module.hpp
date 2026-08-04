@@ -13,5 +13,6 @@ void loadBuiltinModuleTable() noexcept;
 void loadModule(const std::string& dllName);
 void unloadModule(ModuleHandle handle);
 ModuleHandle getCurrentModuleHandle() noexcept;
+void loadSavedModules();
 
 #endif

@@ -35,4 +35,5 @@ void createAppDataFolderIfNotExists() {
         return;
     }
     fs::create_directories(*optionalPath / "settings");
+	fs::create_directories(*optionalPath / "modules");
 }

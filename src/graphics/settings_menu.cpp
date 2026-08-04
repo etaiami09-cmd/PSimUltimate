@@ -235,6 +235,7 @@ void drawSettingsContent() {
 } // namespace
 
 void openSettingsMenu() {
+	if (keepMenuOpen) {return;}
     openMenu = true;
     keepMenuOpen = true;
 }

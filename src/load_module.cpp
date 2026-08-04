@@ -1,4 +1,7 @@
 #include <string>
+#include <filesystem>
+
+#include "app_data_utils.hpp"
 
 #include "load_module.hpp"
 
@@ -30,6 +33,7 @@
 #include <dlfcn.h>
 #endif
 
+
 namespace {
 PSIM_Module_Function_Table functionTable{regModule,
     regConstant, regAttribute, regForce,
@@ -42,11 +46,13 @@ ModuleHandle currentModuleHandle;
 
 } // namespace
 
+
 void loadBuiltinModuleTable() noexcept {
     loadModuleSystem(&functionTable);
 }
 
 // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
+
 void loadModule(const std::string& dllName) {
 #if defined(_WIN32)
     ModuleHandle module = LoadLibraryA(dllName.c_str());
@@ -86,4 +92,26 @@ void unloadModule(ModuleHandle handle) {
 ModuleHandle getCurrentModuleHandle() noexcept {
 	return currentModuleHandle;
 }
+
+#if defined(_WIN32)
+#define DYNAMIC_LIB_FILE_EXTENSION ".dll"
+#elif defined(__APPLE__)
+#define DYNAMIC_LIB_FILE_EXTENSION ".dylib"
+#else
+#define DYNAMIC_LIB_FILE_EXTENSION ".so"
+#endif
+
+void loadSavedModules() {
+	namespace fs = std::filesystem;
+	auto appDataFolder = getAppdataFolder();
+	if (!appDataFolder.has_value()) {return;}
+	auto modulesFolder = appDataFolder.value() / "modules";
+	if (!fs::is_directory(modulesFolder)) {return;}
+	for (auto file : fs::directory_iterator(modulesFolder)) {
+		if (file.path().has_extension() && file.path().extension() == (DYNAMIC_LIB_FILE_EXTENSION)) {
+			loadModule(fs::absolute(file.path()).string());
+		}
+	}
+}
+
 // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)

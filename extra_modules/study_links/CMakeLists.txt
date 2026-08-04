@@ -15,6 +15,7 @@ set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
          raylib
          GIT_REPOSITORY https://github.com/raysan5/raylib.git
          GIT_TAG 5.0
+         GIT_SHALLOW TRUE
  )
 
 set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)

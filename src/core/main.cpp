@@ -1,17 +1,14 @@
 #define PSIM_MAIN_CPP
 
 #include "app_data_utils.hpp"
-#include "raylib.h"
 #include "graphical.hpp"
 #include "simulation.hpp"
 #include "particles.hpp"
 #include "controls.hpp"
 #include "builtin_modules.hpp"
-#include "configs.hpp"
-#include "fps.hpp"
 #include "load_module.hpp"
-#include "module.hpp"
 #include "shutdown.hpp"
+#include "shutdown_hooks.hpp"
 
 int main() {
     createAppDataFolderIfNotExists();
@@ -20,6 +17,7 @@ int main() {
     loadBuiltinModuleTable();
     initElectrostaticModule();
     initGravityModule();
+	loadSavedModules();
     startWindow();
 
     while (!shouldShutdown()) {
@@ -31,5 +29,6 @@ int main() {
     }
 
     closeWindow();
+	runShutdownHooks();
     return 0;
 }

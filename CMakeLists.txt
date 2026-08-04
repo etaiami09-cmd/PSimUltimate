@@ -56,7 +56,9 @@ add_library(PSimTestableLib STATIC ${ENGINE_SOURCES}
         include/confirm_action.hpp
         src/graphics/confirm_action.cpp
         include/shutdown.hpp
-        src/core/shutdown.cpp)
+        src/core/shutdown.cpp
+        include/shutdown_hooks.hpp
+        src/shutdown_hooks.cpp)
 target_include_directories(PSimTestableLib PUBLIC 
     include
     include/inlines

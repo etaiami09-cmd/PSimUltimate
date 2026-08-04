@@ -4,6 +4,7 @@
 #include <limits>
 
 #include "Vec2.hpp"
+#include "Vec2-impl.hpp"
 
 namespace PSimImpl {
 template<typename T>
@@ -15,6 +16,8 @@ struct Position : Vec2<float>, PSimImpl::FloatVecOps<Position> {
     using PSimImpl::FloatVecOps<Position>::VectorOperators;
     using PSimImpl::FloatVecOps<Position>::operator+;
     using PSimImpl::FloatVecOps<Position>::operator-;
+	using PSimImpl::FloatVecOps<Position>::operator*;
+	using PSimImpl::FloatVecOps<Position>::operator/;
 };
 
 struct Velocity : Vec2<float>, PSimImpl::FloatVecOps<Velocity> {
@@ -22,6 +25,8 @@ struct Velocity : Vec2<float>, PSimImpl::FloatVecOps<Velocity> {
     using PSimImpl::FloatVecOps<Velocity>::VectorOperators;
     using PSimImpl::FloatVecOps<Velocity>::operator+;
     using PSimImpl::FloatVecOps<Velocity>::operator-;
+	using PSimImpl::FloatVecOps<Velocity>::operator*;
+	using PSimImpl::FloatVecOps<Velocity>::operator/;
 };
 
 struct Force : Vec2<float>, PSimImpl::FloatVecOps<Force> {
@@ -29,6 +34,8 @@ struct Force : Vec2<float>, PSimImpl::FloatVecOps<Force> {
     using PSimImpl::FloatVecOps<Force>::VectorOperators;
     using PSimImpl::FloatVecOps<Force>::operator+;
     using PSimImpl::FloatVecOps<Force>::operator-;
+	using PSimImpl::FloatVecOps<Force>::operator*;
+	using PSimImpl::FloatVecOps<Force>::operator/;
 };
 
 class Particle {

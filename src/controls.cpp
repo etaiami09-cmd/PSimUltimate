@@ -10,6 +10,7 @@
 
 #include "module.hpp"
 #include "module_gui.hpp"
+#include "settings_menu.hpp"
 
 namespace {
 std::vector<Keybind> keybinds;
@@ -72,6 +73,9 @@ void registerKeybinds() noexcept {
 	std::vector<KeyboardKey> importExtension{KEY_LEFT_CONTROL, KEY_M};
 	keybinds.emplace_back("internal_keybind", "Import Module",
 		importExtension, std::span<const MouseButton>{}, loadModuleWithDialog);
+	std::vector<KeyboardKey> openSettings{KEY_LEFT_CONTROL, KEY_I};
+	keybinds.emplace_back("internal_keybind", "Open Settings Menu",
+		openSettings, std::span<const MouseButton>{}, openSettingsMenu);
 }
 
 void addKeybind(const std::string &module, const std::string& name,
