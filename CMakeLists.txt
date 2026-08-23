@@ -22,6 +22,28 @@ FetchContent_Declare(
 set(BUILD_SHARED_LIBS ON CACHE BOOL "Forced shared library build" FORCE)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
+# fetch logos
+set(TRANSPARENT_LOGO "${CMAKE_CURRENT_BINARY_DIR}/transparent_logo.png")
+set(APP_ICON "${CMAKE_CURRENT_BINARY_DIR}/app_icon.png")
+
+file(DOWNLOAD
+        "https://etaiami09-cmd.github.io/psim-assets/logo_transparent.png"
+        "${TRANSPARENT_LOGO}"
+        SHOW_PROGRESS
+)
+
+file(DOWNLOAD
+        "https://etaiami09-cmd.github.io/psim-assets/logo_32x_transparent.png"
+        "${APP_ICON}"
+        SHOW_PROGRESS
+)
+
+file(COPY
+        "${CMAKE_CURRENT_SOURCE_DIR}/License.txt"
+        DESTINATION
+        "${CMAKE_CURRENT_BINARY_DIR}"
+)
+
 FetchContent_MakeAvailable(raylib)
 
 configure_file(
@@ -71,7 +93,7 @@ target_include_directories(PSimTestableLib PUBLIC
 target_link_libraries(PSimTestableLib PUBLIC raylib stdc++exp)
 target_compile_definitions(PSimTestableLib PRIVATE NO_FONT_AWESOME)
 target_compile_options(PSimTestableLib PRIVATE
-    --embed-dir=${CMAKE_CURRENT_SOURCE_DIR})
+    --embed-dir=${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(PSimUlt src/core/main.cpp)
 target_link_libraries(PSimUlt PRIVATE PSimTestableLib)
@@ -94,8 +116,8 @@ set_target_properties(PSimUlt PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
 target_compile_definitions(PSimTestableLib PUBLIC PSIM_STATIC_BUILD)
 
 target_link_options(PSimUlt PRIVATE
-        $<$<PLATFORM_ID:Windows>:-mwindows>
-        $<$<PLATFORM_ID:Windows>:-Wl,--entry=mainCRTStartup>
+        $<$<AND:$<PLATFORM_ID:Windows>,$<CONFIG:Release>>:-mwindows>
+        $<$<AND:$<PLATFORM_ID:Windows>,$<CONFIG:Release>>:-Wl,--entry=mainCRTStartup>
 )
 
 # gcc 16.1.0 has a bug when compiling with debug mode, this solves it

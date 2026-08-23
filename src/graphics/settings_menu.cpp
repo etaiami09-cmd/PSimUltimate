@@ -16,6 +16,7 @@
 #include "particles.hpp"
 #include "particle_creation_gui.hpp"
 #include "pop_up_alerts.hpp"
+#include "rlImGui.h"
 
 namespace {
 bool firstSettingsFrame = true;
@@ -204,6 +205,7 @@ void drawAboutTab() {
     ImGui::Spacing();
     ImGui::TextUnformatted(std::format("PSimUltimate {}", PSimImpl::PSimAppVersion_).c_str());
     ImGui::TextLinkOpenURL("GitHub", "https://github.com/etaiami09-cmd/PSimUltimate");
+	rlImGuiImage(&getLogo());
     ImGui::TextUnformatted(PSimImpl::PSimLicenseText_);
 }
 

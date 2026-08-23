@@ -36,14 +36,30 @@ constexpr int minGUIWidth = 200;
 constexpr int defaultGUIWidth = 320;
 ImVec2 currentWindowSize;
 bool firstFrame = true;
+const unsigned char appIcon[] = {
+#embed "app_icon.png"
+	, 0};
+const unsigned char logoBytes[] {
+#embed "transparent_logo.png"
+	, 0};
+Texture2D logo;
 } // namespace
 
 void startWindow() {
-    SetTraceLogLevel(LOG_NONE);
+    // SetTraceLogLevel(LOG_NONE);
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-	SetConfigFlags(FLAG_WINDOW_HIGHDPI);
     InitWindow(windowWidth, windowHeight, windowTitle);
+    Image icon = LoadImageFromMemory(".png",
+    	appIcon,
+    	sizeof(appIcon)
+    );
+    SetWindowIcon(icon);
+    UnloadImage(icon);
+	logo = LoadTextureFromImage(LoadImageFromMemory(
+		".png",
+		logoBytes,
+		sizeof(logoBytes)));
     auto fpsConfig = getConfigValue<int>("FPS");
     if (fpsConfig.has_value()) {
         setFPS(std::get<0>(fpsConfig.value()));
@@ -59,8 +75,8 @@ void startWindow() {
     const ImVec4 &headerColor = style.Colors[ImGuiCol_TitleBgActive];
     style.Colors[ImGuiCol_TitleBg] = headerColor;
     style.Colors[ImGuiCol_TitleBgCollapsed] = headerColor;
-	setScaling(getSystemScalingFactor());
-	SetExitKey(KEY_NULL);
+    setScaling(getSystemScalingFactor());
+    SetExitKey(KEY_NULL);
 }
 
 void closeWindow() {
@@ -70,6 +86,10 @@ void closeWindow() {
 
 float getPSimGUIWidth() {
     return currentWindowSize.x;
+}
+
+const Texture2D& getLogo() {
+	return logo;
 }
 
 namespace {
