@@ -31,8 +31,8 @@ void displayPopups() {
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration
                             | ImGuiWindowFlags_AlwaysAutoResize
                             | ImGuiWindowFlags_NoSavedSettings
-                            | ImGuiViewportFlags_NoFocusOnAppearing
-                            | ImGuiItemFlags_NoNav;
+                            | ImGuiWindowFlags_NoFocusOnAppearing
+                            | ImGuiWindowFlags_NoNav;
     size_t removeIndex = -1;
     for (size_t i = 0; i < displayCount; i++) {
         ImGui::SetNextWindowPos(ImVec2(static_cast<float>(GetScreenWidth())

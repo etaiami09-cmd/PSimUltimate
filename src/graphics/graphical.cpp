@@ -167,9 +167,9 @@ void drawFrame() {
         }
     }
 	endTransformationMode();
-	setOffset({0, 0});
+    setOffset({0, 0});
 	beginTransformationMode();
-    drawGUI();
+	drawGUI();
 	endTransformationMode();
     EndDrawing();
 	if (WindowShouldClose()) {

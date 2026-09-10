@@ -22,8 +22,7 @@ std::optional<fs::path> getAppdataFolder() {
 #else
     const char* xdgConfig = std::getenv("XDG_CONFIG_HOME");
     if (xdgConfig == nullptr) {
-        pushPopUpAlert("Could not access XDG_CONFIG_HOME environment variable.");
-        return {};
+        xdgConfig = "~";
     }
     return fs::path(xdgConfig) / ".config" / (std::string{"PSimUltimate "} + PSimImpl::PSimAppVersion_);
 #endif

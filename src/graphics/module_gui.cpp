@@ -12,9 +12,9 @@ namespace {
 #if defined(_WIN32)
 const auto fileTypes{"*.dll"};
 #elif defined(__APPLE__)
-const auto std::string fileTypes{"*.dylib"};
+const auto fileTypes{"*.dylib"};
 #else
-const auto std::string fileTypes{"*.so"};
+const auto fileTypes{"*.so"};
 #endif
 constexpr ImVec2 moduleImportButtonSize(200, 30);
 } // namespace

@@ -114,11 +114,13 @@ add_custom_command(TARGET PSimUlt POST_BUILD
 target_compile_options(PSimTestableLib PRIVATE -freflection)
 target_compile_options(PSimUlt PRIVATE -freflection)
 
-target_link_options(PSimUlt PRIVATE
+if (WIN32)
+	target_link_options(PSimUlt PRIVATE
         -static
         -static-libgcc
         -static-libstdc++
 )
+endif()
 
 set_target_properties(PSimUlt PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
 

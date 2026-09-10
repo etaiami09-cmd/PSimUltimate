@@ -10,7 +10,7 @@
 #if defined(_WIN32)
 #  define PSIM_MODULE_EXPORT __declspec(dllexport)
 #elif defined(__GNUC__)
-#  define PSIM_MODULE_EXPORT __attribute__((visibility("default")))
+#  define PSIM_MODULE_EXPORT __attribute__((visibility("default"), used))
 #else
 #  define PSIM_MODULE_EXPORT
 #endif
@@ -22,6 +22,7 @@
 #include <optional>
 #include <span>
 #include <string>
+#include <cstring>
 #include <functional>
 #include <cstddef>
 #include <utility>

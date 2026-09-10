@@ -66,7 +66,7 @@ void loadModule(const std::string& dllName) {
     callable(&functionTable);
 	currentModuleHandle = {};
 #else
-    ModuleHandle handle = dlopen(dllName, RTLD_NOW | RTLD_LOCAL);
+    ModuleHandle module = dlopen(dllName.c_str(), RTLD_NOW | RTLD_LOCAL);
     dlerror();
     auto entry = reinterpret_cast<void(*)(const PSIM_Module_Function_Table*)>(
         dlsym(module, "PSIM_Initialize_Module")

@@ -9,7 +9,7 @@
 #include "load_module.hpp"
 #include "shutdown.hpp"
 #include "shutdown_hooks.hpp"
-
+#include "rlImGui.h"
 int main() {
     createAppDataFolderIfNotExists();
     loadTicksPerFrameConfig();
@@ -19,15 +19,13 @@ int main() {
     initGravityModule();
 	loadSavedModules();
     startWindow();
-
     while (!shouldShutdown()) {
-        if (Simulation::on()) {
+	if (Simulation::on()) {
             Particles::tick();
         }
         handleControls();
         drawFrame();
     }
-
     closeWindow();
 	runShutdownHooks();
     return 0;
