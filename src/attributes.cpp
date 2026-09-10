@@ -7,6 +7,8 @@
 
 #include "attributes.hpp"
 
+#include <ranges>
+
 namespace {
 
 std::vector<Attribute> attributes;
@@ -70,4 +72,16 @@ void removeModuleAttributes(const std::string& module) noexcept {
 	std::erase_if(attributes, [&module](const auto& attribute) {
 		return attribute.module == module;
 	});
+}
+
+void setParticleAttributes(const AttributeEditor& editor) {
+	for (auto&& [i, attribute] : std::views::enumerate(attributes)) {
+		attribute.values[editor.index] = editor.values[i];
+	}
+}
+
+void removeAttributeValues(size_t index) noexcept {
+	for (auto& attribute : attributes) {
+		attribute.values.erase(attribute.values.begin() + index);
+	}
 }

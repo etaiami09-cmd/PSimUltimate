@@ -11,6 +11,7 @@ float topWall{};
 float bottomWall{};
 float leftWall{};
 float rightWall{};
+float restitution{0.9f};
 } // namespace
 
 void initializePSimModule() {
@@ -49,6 +50,10 @@ void initializePSimModule() {
 		std::numeric_limits<float>::max(), [](float newValue) {
 			rightWall = newValue;
 		});
+	registerConstant(module, "Wall Restitution", restitution, 0.0f, 1.0f,
+		[](float newValue) {
+			restitution = newValue;
+		});
 
 	registerPositionHandler(module, [](std::span<Particle> particles) {
 		for (auto& particle : particles) {
@@ -62,7 +67,7 @@ void initializePSimModule() {
 				particle.setVelocity(Velocity{
 					-particle.getVelocity().x,
 					particle.getVelocity().y
-				});
+				} * 0.9f);
 			}
 			if (particle.getPosition().y - particle.getRadius() < topWall
 				|| particle.getPosition().y + particle.getRadius() > bottomWall) {
@@ -74,7 +79,7 @@ void initializePSimModule() {
 				particle.setVelocity(Velocity{
 					particle.getVelocity().x,
 					-particle.getVelocity().y
-				});
+				} * 0.9f);
 			}
 		}
 	});

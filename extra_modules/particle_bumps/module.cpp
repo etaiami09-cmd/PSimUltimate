@@ -72,14 +72,26 @@ void resolveCollision(Particle& a, Particle& b, float restitution) {
 	);
 }
 
+
+namespace {
+
+float restitution{0.9f};
+
+} // namespace
+
 void initializePSimModule() {
     std::string module{"Bump Particles"};
 	registerModule(module);
 
+	registerConstant(module, "Bumping Restitution", restitution,
+		0.0f, 1.0f, [](float newValue) {
+		restitution = newValue;
+	});
+
 	registerPositionHandler(module, [](std::span<Particle> particles) {
 		for (size_t i = 0; i < particles.size(); i++) {
 			for (size_t j = i + 1; j < particles.size(); j++) {
-				resolveCollision(particles[i], particles[j], 1.0f);
+				resolveCollision(particles[i], particles[j], restitution);
 			}
 		}
 	});

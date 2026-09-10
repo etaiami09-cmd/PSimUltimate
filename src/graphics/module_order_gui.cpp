@@ -54,7 +54,7 @@ void drawModuleOrderGUI() {
     	if (ImGui::Button(std::format("...##{}", moduleName).c_str(),
 						  {0, PSimImpl::moduleListElementSize.y})) {
     		ImGui::OpenPopup(tooltipPopupId.c_str());
-						  }
+		}
 
     	if (ImGui::BeginPopup(tooltipPopupId.c_str())) {
 

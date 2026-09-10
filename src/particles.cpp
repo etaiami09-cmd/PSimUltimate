@@ -20,6 +20,10 @@ std::span<const Particle> Particles::get() noexcept {
     return std::span{particles};
 }
 
+std::span<Particle> Particles::getNonConst() noexcept {
+	return std::span{particles};
+}
+
 std::span<const Force> Particles::getForces() noexcept {
     return std::span{forces};
 }
@@ -107,6 +111,12 @@ void Particles::tick() noexcept {
         }
         callPositionHandlers();
     }
+}
+
+void Particles::remove(size_t index) noexcept {
+	particles.erase(particles.begin() + index);
+	forces.erase(forces.begin() + index);
+	removeAttributeValues(index);
 }
 
 int getTicksPerFrame() {

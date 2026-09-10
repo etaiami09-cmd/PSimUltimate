@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(ParticleSimulatorUltimate VERSION 0.1.6 LANGUAGES CXX)
+project(ParticleSimulatorUltimate VERSION 1.0 LANGUAGES CXX)
 
 enable_testing()
 
@@ -25,10 +25,17 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 # fetch logos
 set(TRANSPARENT_LOGO "${CMAKE_CURRENT_BINARY_DIR}/transparent_logo.png")
 set(APP_ICON "${CMAKE_CURRENT_BINARY_DIR}/app_icon.png")
+set(LOGO "${CMAKE_CURRENT_BINARY_DIR}/logo.ico")
 
 file(DOWNLOAD
         "https://etaiami09-cmd.github.io/psim-assets/logo_transparent.png"
         "${TRANSPARENT_LOGO}"
+        SHOW_PROGRESS
+)
+
+file(DOWNLOAD
+        "https://etaiami09-cmd.github.io/psim-assets/logo.ico"
+        "${LOGO}"
         SHOW_PROGRESS
 )
 
@@ -95,7 +102,9 @@ target_compile_definitions(PSimTestableLib PRIVATE NO_FONT_AWESOME)
 target_compile_options(PSimTestableLib PRIVATE
     --embed-dir=${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable(PSimUlt src/core/main.cpp)
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc" "IDI_ICON1 ICON \"logo.ico\"\n")
+
+add_executable(PSimUlt src/core/main.cpp "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc")
 target_link_libraries(PSimUlt PRIVATE PSimTestableLib)
 
 add_custom_command(TARGET PSimUlt POST_BUILD
@@ -139,6 +148,8 @@ set(CPACK_PACKAGE_EXECUTABLES "PSimUlt" "Particle Simulator")
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};ParticleSimulatorUltimate;ALL;/")
 
 set(CPACK_GENERATOR "NSIS")
+set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_BINARY_DIR}/logo.ico")
+set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_BINARY_DIR}/logo.ico")
 
 include(CPack)
 target_compile_definitions(PSimUlt PRIVATE NO_FONT_AWESOME)

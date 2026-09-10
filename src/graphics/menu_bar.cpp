@@ -24,7 +24,7 @@ void drawFileMenu() {
         if (ImGui::MenuItem("Open Simulation", "Ctrl+O")) {
             openStateFromFile();
         }
-        if (ImGui::MenuItem("Save Simulation", "Crtl+S")) {
+        if (ImGui::MenuItem("Save Simulation", "Ctrl+S")) {
             saveStateToFile();
         }
         ImGui::SeparatorText("Modules");

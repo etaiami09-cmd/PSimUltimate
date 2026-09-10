@@ -29,4 +29,4 @@ target_link_libraries(PSimTestRunner
 )
 
 include(Catch)
-catch_discover_tests(PSimTestRunner)
+catch_discover_tests(PSimTestRunner DL_PATHS "C:/msys64/ucrt64/bin")

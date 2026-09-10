@@ -1,6 +1,5 @@
 #include <format>
 #include <vector>
-#include <cstddef>
 #include <algorithm>
 
 #include "attributes.hpp"
@@ -16,33 +15,14 @@
 namespace
 {
 constexpr int defaultRadius = 10;
-int newParticleX = 0;
-int newParticleY = 0;
-int newParticleVelX = 0;
-int newParticleVelY = 0;
+float newParticleX = 0;
+float newParticleY = 0;
+float newParticleVelX = 0;
+float newParticleVelY = 0;
 float newParticleRadius = defaultRadius;
 float newParticleMass = 1;
 std::vector<float> newParticleAttributes;
-
-void vecInput(const char* name, int* xTarget, int* yTarget) {
-	ImGui::TextUnformatted(name);
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("X");
-	ImGui::SameLine();
-	ImGui::InputInt(std::format("##{}_x", name).c_str(), xTarget);
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Y");
-	ImGui::SameLine();
-	ImGui::InputInt(std::format("##{}_y", name).c_str(), yTarget);
-}
-
-void valueInput(const char* name, float* target, float minValue, float maxValue) {
-	ImGui::AlignTextToFramePadding();
-	ImGui::TextUnformatted(name);
-	if (ImGui::InputFloat(std::format("##{}_constant", name).c_str(), target)) {
-		*target = std::clamp(*target, minValue, maxValue);
-	}
-}
+bool positionSelectionEnabled = false;
 
 void drawTargetPosition() {
 	bool shouldDraw = shouldDrawTarget();
@@ -73,12 +53,41 @@ void drawTargetPosition() {
 }
 } // namespace
 
+void vecInput(const char* name, float* xTarget, float* yTarget) {
+	ImGui::TextUnformatted(name);
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("X");
+	ImGui::SameLine();
+	ImGui::InputFloat(std::format("##{}_x", name).c_str(), xTarget);
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Y");
+	ImGui::SameLine();
+	ImGui::InputFloat(std::format("##{}_y", name).c_str(), yTarget);
+}
+
+bool valueInput(const char* name, float* target, float minValue, float maxValue) {
+	ImGui::AlignTextToFramePadding();
+	ImGui::TextUnformatted(name);
+	if (ImGui::InputFloat(std::format("##{}_constant", name).c_str(), target)) {
+		*target = std::clamp(*target, minValue, maxValue);
+		return true;
+	}
+	return false;
+}
+
 void drawParticleCreationGUI() {
+	if (positionSelectionEnabled) {
+		newParticleX = GetMousePosition().x - getPSimGUIWidth();
+		newParticleY = GetMousePosition().y - ImGui::GetFrameHeight();
+	}
 	newParticleAttributes.resize(getAttributes().size());
 	ImGui::SeparatorText("New Particle");
 	ImGui::Spacing();
 	ImGui::BeginGroup();
 	vecInput("Position", &newParticleX, &newParticleY);
+	if (ImGui::Button("Select Position With Cursor", ImVec2{0, 25})) {
+		positionSelectionEnabled = true;
+	}
 	vecInput("Velocity", &newParticleVelX, &newParticleVelY);
 	valueInput("Radius", &newParticleRadius, Particle::minRadius, Particle::maxRadius);
 	valueInput("Mass", &newParticleMass, Particle::minMass, Particle::maxMass);
@@ -188,4 +197,8 @@ int getNewParticleTargetWidth() {
 void setNewParticleTargetWidth(int newWidth) {
 	targetWidth = newWidth;
 	setConfigValue<int>("ParticleTargetWidth", newWidth);
+}
+
+void disableParticlePositionSelection() {
+	positionSelectionEnabled = false;
 }

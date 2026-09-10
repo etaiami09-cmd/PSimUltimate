@@ -10,6 +10,7 @@
 
 #include "module.hpp"
 #include "module_gui.hpp"
+#include "particle_creation_gui.hpp"
 #include "settings_menu.hpp"
 
 namespace {
@@ -55,6 +56,9 @@ std::string Keybind::formatKeys() const noexcept {
 }
 
 void handleControls() {
+	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+		disableParticlePositionSelection();
+	}
     for (const auto& keybind : keybinds) {
         if (isKeybindActivated(keybind))
         {

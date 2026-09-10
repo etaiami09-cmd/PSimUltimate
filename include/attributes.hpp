@@ -16,6 +16,11 @@ struct Attribute {
     std::vector<float> values;
 };
 
+struct AttributeEditor {
+	size_t index;
+	std::vector<float> values;
+};
+
 void addAttribute(const std::string& module, const std::string& name, float defaultValue,
     float minValue, float maxValue) noexcept;
 std::span<const Attribute> getAttributes() noexcept;
@@ -26,5 +31,7 @@ void clearAttributeValues() noexcept;
 void resizeAttributeValues(size_t newSize) noexcept;
 void pushDefaultParticleAttributes() noexcept;
 void removeModuleAttributes(const std::string& module) noexcept;
+void setParticleAttributes(const AttributeEditor& editor);
+void removeAttributeValues(size_t index) noexcept;
 
 #endif

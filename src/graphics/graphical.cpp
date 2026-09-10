@@ -21,10 +21,12 @@
 #include "about_window.hpp"
 #include "configs.hpp"
 #include "confirm_action.hpp"
+#include "edit_particles_ui.hpp"
 #include "fps.hpp"
 #include "pop_up_alerts.hpp"
 #include "settings_menu.hpp"
 #include "shutdown.hpp"
+#include "simulation.hpp"
 #include "window_transformations.hpp"
 
 namespace {
@@ -46,7 +48,7 @@ Texture2D logo;
 } // namespace
 
 void startWindow() {
-    // SetTraceLogLevel(LOG_NONE);
+    SetTraceLogLevel(LOG_NONE);
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, windowTitle);
@@ -126,6 +128,9 @@ void drawGUI() {
     drawParticleCreationGUI();
     drawConstantsGUI();
     drawModuleGUI();
+	if (!Simulation::on()) {
+		runEditParticlesUI();
+	}
     drawAboutWindow();
     ImGui::End();
     displayPopups();
