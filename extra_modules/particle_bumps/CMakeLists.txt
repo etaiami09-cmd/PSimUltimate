@@ -9,7 +9,7 @@
 
  include(FetchContent)
 
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+ set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
  FetchContent_Declare(
          raylib
@@ -18,11 +18,15 @@ set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
          GIT_SHALLOW TRUE
  )
 
-set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+ set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
 
  FetchContent_MakeAvailable(raylib)
 
  add_library(psim_module_lib SHARED ${SOURCE_FILES} ${HEADER_FILES})
+
+ if (WIN32)
+     target_link_options(psim_module_lib PRIVATE -static -static-libgcc -static-libstdc++)
+ endif()
 
  target_include_directories(psim_module_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
  target_link_libraries(psim_module_lib PRIVATE raylib)

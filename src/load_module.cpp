@@ -56,6 +56,27 @@ void loadBuiltinModuleTable() noexcept {
 void loadModule(const std::string& dllName) {
 #if defined(_WIN32)
     ModuleHandle module = LoadLibraryA(dllName.c_str());
+	if (module == nullptr) {
+		DWORD errorCode = GetLastError();
+
+		LPSTR messageBuffer = nullptr;
+
+		size_t size = FormatMessageA(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			errorCode,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPSTR)&messageBuffer,
+			0,
+			NULL);
+
+		std::string errorMessage{messageBuffer, size};
+
+		LocalFree(messageBuffer);
+
+		pushPopUpAlert(std::format("Error: could not load library."
+			"Error code: {} Description: {}", errorCode, errorMessage));
+	}
 	auto entry = GetProcAddress(module, "PSIM_Initialize_Module");
     auto callable = reinterpret_cast<void(PSIM_CALL*)(const PSIM_Module_Function_Table*)>(entry);
     if (callable == nullptr) {

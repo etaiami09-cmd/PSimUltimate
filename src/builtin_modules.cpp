@@ -69,7 +69,7 @@ void drawElectricParticles(std::span<const Particle> particles) {
     }
 }
 
-constexpr float defaultGravity = 5;
+constexpr float defaultGravity = 200;
 float gravity = defaultGravity;
 constexpr float defaultK = 9e03;
 float coulombs = defaultK;
