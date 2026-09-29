@@ -4,11 +4,21 @@
 
 PSim is a particle simulator built to visualize how different forces cause particles to interact. Spawn particles, enable and disable forces, tweak settings and physical constants, save and load simulation states, and build your own modules with custom forces.
 
-![PSim demo](https://etaiami09-cmd.github.io/psim-assets/demo-image.png)
+![PSim demo 1](https://etaiami09-cmd.github.io/psim-assets/demo-image.png)
+![PSim demo 2](https://etaiami09-cmd.github.io/psim-assets/demo2.png)
+![PSim demo 3](https://etaiami09-cmd.github.io/psim-assets/demo3.png)
 
 ## Try It Out
 
 The latest release, with an installer, can be found on the [Releases page](https://github.com/etaiami09-cmd/PSimUltimate/releases). Simply follow the instructions in the install wizard and the app will appear in your start menu.
+
+### Platform Support
+
+| Platform | Status | How to get it |
+| --- | --- | --- |
+| Windows x64 | Official builds | Download the installer from [Releases](https://github.com/etaiami09-cmd/PSimUltimate/releases) |
+| Linux | Build from source — verified on WSL2 | Requires a C++26-compliant toolchain - See [Compiling the Project](#compiling-the-project) |
+| macOS | Build from source — untested | Requires a C++26-compliant toolchain — see [Compiling the Project](#compiling-the-project) |
 
 ## Features
 
